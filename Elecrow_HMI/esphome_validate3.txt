@@ -1,0 +1,39 @@
+﻿esphome : INFO 
+ESPHome 2026.2.4
+At line:1 char:1
++ esphome config 
+elecrow-display.yaml 
+2>&1 | Out-File 
+-FilePath esphome ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (INFO ESPHo   
+ me 2026.2.4:Strin    
+g) [], RemoteExce    
+ption
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+INFO Reading 
+configuration elecrow-
+display.yaml...
+Failed config
+
+display.mipi_rgb: [source elecrow-display.yaml:71]
+  
+  Couldn't find any component that can be used for 'spi::SPIComponent'. Are you missing a hub declaration?.
+  platform: mipi_rgb
+  model: CUSTOM
+  id: my_display
+  auto_clear_enabled: False
+  update_interval: 1s
+  color_order: RGB
+  pclk_frequency: 16000000.0
+  dimensions: 
+    width: 800
+    height: 480
+    offset_height: 0
+    offset_width: 0

@@ -1,0 +1,52 @@
+﻿esphome : INFO 
+ESPHome 2026.2.4
+At line:1 char:1
++ esphome config 
+elecrow-display.yaml 
+2>&1 | Out-File 
+-FilePath esphome ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (INFO ESPHo   
+ me 2026.2.4:Strin    
+g) [], RemoteExce    
+ption
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+INFO Reading 
+configuration elecrow-
+display.yaml...
+WARNING GPIO0 is a 
+strapping PIN and 
+should only be used 
+for I/O with care.
+Attaching external 
+pullup/down resistors 
+to strapping pins can 
+cause unexpected 
+failures.
+See https://esphome.io
+/guides/faq/#why-am-i-
+getting-a-warning-abou
+t-strapping-pins
+Failed config
+
+display.mipi_rgb: [source elecrow-display.yaml:71]
+  
+  'init_sequence' is a required option for [display.mipi_rgb].
+  platform: mipi_rgb
+  model: custom
+  id: my_display
+  auto_clear_enabled: False
+  update_interval: 1s
+  color_order: RGB
+  pclk_frequency: 16MHz
+  dimensions: 
+    width: 800
+    height: 480
+  de_pin: 41
+  hsync_pin: 39

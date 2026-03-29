@@ -1,0 +1,340 @@
+# ESPHome - Elecrow 7.0" Display - Live Radar GUI
+# Receives data from LD2450 radar ESP32 node via HTTP
+
+substitutions:
+  devicename: elecrow-display
+  friendly_name: Radar Display
+
+esphome:
+  name: $devicename
+  friendly_name: ${friendly_name}
+  platformio_options:
+    board_build.flash_mode: qio
+    board_build.psram_type: opi
+  includes:
+    - radar_client.h
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+    version: recommended
+    sdkconfig_options:
+      CONFIG_ESP_MAIN_TASK_STACK_SIZE: "16384"
+      CONFIG_ESP_HTTP_CLIENT_ENABLE_HTTPS: "n"
+    advanced:
+      include_builtin_idf_components:
+        - esp_http_client
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+
+ota:
+  - platform: esphome
+    password: "hpsz1234"
+
+wifi:
+  ssid: "arjuns23fe"
+  password: "12121212"
+  ap:
+    ssid: "${devicename} Hotspot"
+    password: "hpsz1234"
+
+captive_portal:
+
+web_server:
+  port: 80
+
+output:
+  - platform: ledc
+    pin: 2
+    id: backlight_output
+
+light:
+  - platform: monochromatic
+    output: backlight_output
+    name: "Display Backlight"
+    id: backlight
+    restore_mode: ALWAYS_ON
+
+i2c:
+  sda: 19
+  scl: 20
+  scan: true
+
+touchscreen:
+  - platform: gt911
+    id: my_touchscreen
+    display: my_display
+
+globals:
+  # Sweep animation
+  - id: sweep_angle
+    type: float
+    initial_value: '0'
+  - id: prev_sweep_angle
+    type: float
+    initial_value: '-1'
+  - id: frame_count
+    type: int
+    initial_value: '0'
+  # Target data (set by radar_client.h)
+  - id: t1_x
+    type: float
+    initial_value: '0'
+  - id: t1_y
+    type: float
+    initial_value: '0'
+  - id: t1_speed
+    type: float
+    initial_value: '0'
+  - id: t1_threat
+    type: float
+    initial_value: '0'
+  - id: t1_active
+    type: bool
+    initial_value: 'false'
+  - id: t2_x
+    type: float
+    initial_value: '0'
+  - id: t2_y
+    type: float
+    initial_value: '0'
+  - id: t2_speed
+    type: float
+    initial_value: '0'
+  - id: t2_threat
+    type: float
+    initial_value: '0'
+  - id: t2_active
+    type: bool
+    initial_value: 'false'
+  - id: t3_x
+    type: float
+    initial_value: '0'
+  - id: t3_y
+    type: float
+    initial_value: '0'
+  - id: t3_speed
+    type: float
+    initial_value: '0'
+  - id: t3_threat
+    type: float
+    initial_value: '0'
+  - id: t3_active
+    type: bool
+    initial_value: 'false'
+  - id: sys_threat
+    type: float
+    initial_value: '0'
+  - id: radar_connected
+    type: bool
+    initial_value: 'false'
+  - id: target_count
+    type: int
+    initial_value: '0'
+
+
+# Poll radar data every 500ms
+interval:
+  - interval: 500ms
+    then:
+      - lambda: |-
+          radar_poll();
+
+display:
+  - platform: rpi_dpi_rgb
+    id: my_display
+    auto_clear_enabled: false
+    update_interval: 500ms
+    color_order: RGB
+    pclk_frequency: 16MHz
+    dimensions:
+      width: 800
+      height: 480
+    de_pin: 41
+    hsync_pin: 39
+    vsync_pin: 40
+    pclk_pin:
+      number: 0
+      ignore_strapping_warning: true
+    pclk_inverted: true
+    hsync_back_porch: 88
+    hsync_front_porch: 40
+    hsync_pulse_width: 48
+    vsync_back_porch: 32
+    vsync_front_porch: 13
+    vsync_pulse_width: 4
+    data_pins:
+      red:
+        - 14
+        - 21
+        - 47
+        - 48
+        - 45
+      blue:
+        - 15
+        - 7
+        - 6
+        - 5
+        - 4
+      green:
+        - 9
+        - 46
+        - 3
+        - 8
+        - 16
+        - 1
+    lambda: |-
+      int PX = 480;
+      int CX = 230;
+      int CY = 430;
+      float SC = 200.0f / 8000.0f;
+      Color bg(3, 10, 6);
+      Color gd(0, 80, 40);
+      Color gf(0, 40, 20);
+      Color grn(0, 255, 136);
+      Color amb(255, 170, 0);
+      Color wht(255, 255, 255);
+      Color red_c(255, 51, 102);
+      Color blu(0, 170, 255);
+      
+      // ─── FRAME 0: draw right panel once ───
+      if (id(frame_count) == 0) {
+        it.fill(bg);
+        it.line(PX, 0, PX, 479, gd);
+        it.printf(PX+10, 8, id(tf), grn, "LD2450 RADAR");
+        it.line(PX, 36, 799, 36, gd);
+        it.line(PX, 96, 799, 96, gd);
+        it.line(PX, 438, 799, 438, gd);
+        it.printf(10, 462, id(sf), gd, "LD2450 RADAR + ANALYTICS");
+      }
+      
+      // ─── EVERY FRAME: clear radar area and redraw ───
+      // Clear only the left radar area (480x460)
+      it.filled_rectangle(0, 0, 479, 458, bg);
+      
+      // Range rings
+      it.circle(CX, CY, 50, gd);
+      it.printf(CX+4, CY-48, id(sf), gd, "2m");
+      it.circle(CX, CY, 100, gd);
+      it.printf(CX+4, CY-98, id(sf), gd, "4m");
+      it.circle(CX, CY, 150, gd);
+      it.printf(CX+4, CY-148, id(sf), gd, "6m");
+      it.circle(CX, CY, 200, gd);
+      it.printf(CX+4, CY-198, id(sf), gd, "8m");
+      it.line(CX, CY, CX, CY-200, gf);
+      it.line(CX, CY, CX-100, CY-173, gf);
+      it.line(CX, CY, CX+100, CY-173, gf);
+      it.filled_circle(CX, CY, 3, wht);
+      
+      // Sweep
+      id(sweep_angle) += 3.0f;
+      if (id(sweep_angle) >= 180.0f) id(sweep_angle) = 0.0f;
+      float sw = (id(sweep_angle) - 90.0f) * 0.01745f;
+      int sex = CX + (int)(200*sinf(sw));
+      int sey = CY - (int)(200*cosf(sw));
+      if (sex < 0) sex = 0; if (sex > 479) sex = 479;
+      if (sey < 0) sey = 0; if (sey > 455) sey = 455;
+      Color swc = (id(sys_threat) > 70) ? red_c : (id(sys_threat) > 40) ? amb : grn;
+      it.line(CX, CY, sex, sey, swc);
+      
+      // Live targets
+      if (id(t1_active)) {
+        int p1x = CX + (int)(id(t1_x)*SC);
+        int p1y = CY - (int)(id(t1_y)*SC);
+        if (p1x > 10 && p1x < 470 && p1y > 10 && p1y < 450) {
+          Color c1 = (id(t1_threat)>60) ? red_c : grn;
+          it.filled_circle(p1x, p1y, 5, c1);
+          it.circle(p1x, p1y, 8, c1);
+          float d1 = sqrtf(id(t1_x)*id(t1_x)+id(t1_y)*id(t1_y))/1000.0f;
+          it.printf(p1x+10, p1y-8, id(sf), c1, "T1 %.1fm", d1);
+        }
+      }
+      if (id(t2_active)) {
+        int p2x = CX + (int)(id(t2_x)*SC);
+        int p2y = CY - (int)(id(t2_y)*SC);
+        if (p2x > 10 && p2x < 470 && p2y > 10 && p2y < 450) {
+          Color c2 = (id(t2_threat)>60) ? red_c : amb;
+          it.filled_circle(p2x, p2y, 5, c2);
+          it.circle(p2x, p2y, 8, c2);
+          float d2 = sqrtf(id(t2_x)*id(t2_x)+id(t2_y)*id(t2_y))/1000.0f;
+          it.printf(p2x+10, p2y-8, id(sf), c2, "T2 %.1fm", d2);
+        }
+      }
+      if (id(t3_active)) {
+        int p3x = CX + (int)(id(t3_x)*SC);
+        int p3y = CY - (int)(id(t3_y)*SC);
+        if (p3x > 10 && p3x < 470 && p3y > 10 && p3y < 450) {
+          Color c3 = (id(t3_threat)>60) ? red_c : blu;
+          it.filled_circle(p3x, p3y, 5, c3);
+          it.circle(p3x, p3y, 8, c3);
+          float d3 = sqrtf(id(t3_x)*id(t3_x)+id(t3_y)*id(t3_y))/1000.0f;
+          it.printf(p3x+10, p3y-8, id(sf), c3, "T3 %.1fm", d3);
+        }
+      }
+      
+      // ─── RIGHT PANEL: update data each frame ───
+      it.filled_circle(PX+290, 18, 5, id(radar_connected) ? grn : red_c);
+      it.printf(PX+10, 42, id(lf), amb, "SYSTEM THREAT");
+      it.rectangle(PX+10, 60, 280, 14, gd);
+      it.filled_rectangle(PX+11, 61, 278, 12, bg);
+      int bw = (int)(id(sys_threat) * 2.78f);
+      if (bw > 278) bw = 278;
+      Color bc = (id(sys_threat)>70) ? red_c : (id(sys_threat)>40) ? amb : grn;
+      if (bw > 0) it.filled_rectangle(PX+11, 61, bw, 12, bc);
+      it.printf(PX+150, 78, id(bf), bc, "%.0f%% ", id(sys_threat));
+      it.filled_rectangle(PX+8, 100, 300, 90, bg);
+      it.rectangle(PX+8, 100, 300, 90, id(t1_active) ? grn : gd);
+      it.printf(PX+14, 104, id(lf), grn, "TARGET 1");
+      if (id(t1_active)) {
+        it.printf(PX+14, 120, id(sf), wht, "X %.0f  Y %.0f mm", id(t1_x), id(t1_y));
+        float d1 = sqrtf(id(t1_x)*id(t1_x)+id(t1_y)*id(t1_y))/1000.0f;
+        it.printf(PX+14, 134, id(sf), wht, "SPD %.1f  DIST %.1fm", id(t1_speed), d1);
+        it.printf(PX+14, 150, id(sf), wht, "THREAT %.0f%%", id(t1_threat));
+      } else { it.printf(PX+14, 136, id(bf), gd, "NO TARGET"); }
+      it.filled_rectangle(PX+8, 196, 300, 90, bg);
+      it.rectangle(PX+8, 196, 300, 90, id(t2_active) ? amb : gd);
+      it.printf(PX+14, 200, id(lf), amb, "TARGET 2");
+      if (id(t2_active)) {
+        it.printf(PX+14, 216, id(sf), wht, "X %.0f  Y %.0f mm", id(t2_x), id(t2_y));
+        float d2 = sqrtf(id(t2_x)*id(t2_x)+id(t2_y)*id(t2_y))/1000.0f;
+        it.printf(PX+14, 230, id(sf), wht, "SPD %.1f  DIST %.1fm", id(t2_speed), d2);
+        it.printf(PX+14, 246, id(sf), wht, "THREAT %.0f%%", id(t2_threat));
+      } else { it.printf(PX+14, 232, id(bf), gd, "NO TARGET"); }
+      it.filled_rectangle(PX+8, 292, 300, 90, bg);
+      it.rectangle(PX+8, 292, 300, 90, id(t3_active) ? blu : gd);
+      it.printf(PX+14, 296, id(lf), blu, "TARGET 3");
+      if (id(t3_active)) {
+        it.printf(PX+14, 312, id(sf), wht, "X %.0f  Y %.0f mm", id(t3_x), id(t3_y));
+        float d3 = sqrtf(id(t3_x)*id(t3_x)+id(t3_y)*id(t3_y))/1000.0f;
+        it.printf(PX+14, 326, id(sf), wht, "SPD %.1f  DIST %.1fm", id(t3_speed), d3);
+        it.printf(PX+14, 342, id(sf), wht, "THREAT %.0f%%", id(t3_threat));
+      } else { it.printf(PX+14, 328, id(bf), gd, "NO TARGET"); }
+      it.filled_rectangle(PX+10, 444, 290, 14, bg);
+      it.printf(PX+10, 446, id(sf), gd, "TARGETS: %d  RANGE: 8m", id(target_count));
+      id(frame_count) = 1;
+
+font:
+  - file: "gfonts://Roboto@700"
+    id: tf
+    size: 22
+  - file: "gfonts://Roboto"
+    id: bf
+    size: 18
+  - file: "gfonts://Roboto@500"
+    id: lf
+    size: 14
+  - file: "gfonts://Roboto"
+    id: sf
+    size: 12
+
+binary_sensor:
+  - platform: status
+    name: "API Connected"
+    id: api_connected

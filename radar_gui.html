@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LD2450 Radar — Live</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+    :root {
+      --g: #00ff88;
+      --gd: rgba(0, 255, 136, .12);
+      --gm: rgba(0, 255, 136, .38);
+      --r: #ff3366;
+      --a: #ffaa00;
+      --b: #00aaff;
+      --w: #ffffff;
+      --bg: #030a06;
+      --panel: rgba(0, 18, 9, .96);
+      --bdr: rgba(0, 255, 136, .18);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--g);
+      font-family: 'Share Tech Mono', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      border-bottom: 1px solid var(--bdr);
+      background: var(--panel);
+      flex-shrink: 0;
+      gap: 10px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .95rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px var(--g);
+    }
+
+    .logo span {
+      color: var(--a);
+    }
+
+    .hdr-r {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: .7rem;
+      flex-shrink: 0;
+    }
+
+    .sdot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #333;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .sdot.live {
+      background: var(--g);
+      box-shadow: 0 0 10px var(--g);
+      animation: bl 2s infinite;
+    }
+
+    .sdot.err {
+      background: var(--r);
+    }
+
+    @keyframes bl {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    .ipf {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .ipf input {
+      background: var(--gd);
+      border: 1px solid var(--bdr);
+      color: var(--g);
+      padding: 3px 7px;
+      font-family: inherit;
+      font-size: .7rem;
+      border-radius: 3px;
+      width: 120px;
+      outline: none;
+    }
+
+    .ipf button {
+      background: var(--gd);
+      border: 1px solid var(--gm);
+      color: var(--g);
+      padding: 3px 10px;
+      font-family: inherit;
+      font-size: .7rem;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .ipf button:hover {
+      background: var(--gm);
+    }
+
+    /* Alert banner */
+    #bnr {
+      display: none;
+      background: rgba(255, 51, 102, .12);
+      border-bottom: 1px solid rgba(255, 51, 102, .4);
+      padding: 5px 14px;
+      font-size: .7rem;
+      color: var(--r);
+      letter-spacing: 2px;
+      flex-shrink: 0;
+      animation: pulse 1.2s infinite;
+    }
+
+    #bnr.show {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .5
+      }
+    }
+
+    main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #rw {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #cb {
+      z-index: 1;
+    }
+
+    #ct {
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    aside {
+      width: 215px;
+      border-left: 1px solid var(--bdr);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .ps {
+      border-bottom: 1px solid var(--bdr);
+      padding: 8px 11px;
+    }
+
+    .pt {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .5rem;
+      letter-spacing: 3px;
+      color: var(--a);
+      margin-bottom: 7px;
+    }
+
+    /* System threat */
+    .threat-bar-wrap {
+      height: 14px;
+      background: rgba(255, 255, 255, .05);
+      border-radius: 7px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .threat-bar {
+      height: 100%;
+      border-radius: 7px;
+      transition: width .3s, background .3s;
+    }
+
+    .tval {
+      font-size: .85rem;
+      font-weight: bold;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .tc {
+      background: var(--gd);
+      border: 1px solid var(--bdr);
+      border-radius: 5px;
+      padding: 6px 8px;
+      margin-bottom: 5px;
+      transition: all .3s;
+    }
+
+    .tc.on {
+      border-color: var(--gm);
+      box-shadow: 0 0 8px var(--gd);
+    }
+
+    .tc.t2.on {
+      border-color: rgba(255, 170, 0, .5);
+    }
+
+    .tc.t3.on {
+      border-color: rgba(0, 170, 255, .5);
+    }
+
+    .tl {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .49rem;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dl {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .t1 .dl {
+      background: var(--g);
+    }
+
+    .t2 .dl {
+      background: var(--a);
+    }
+
+    .t3 .dl {
+      background: var(--b);
+    }
+
+    .td {
+      font-size: .67rem;
+      line-height: 1.8;
+    }
+
+    .td em {
+      color: rgba(255, 255, 255, .4);
+      font-style: normal;
+      font-size: .6rem;
+    }
+
+    .tbr {
+      height: 6px;
+      background: rgba(255, 255, 255, .05);
+      border-radius: 3px;
+      margin: 3px 0;
+      overflow: hidden;
+    }
+
+    .tbr-f {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .3s, background .3s;
+    }
+
+    .cls-badge {
+      display: inline-block;
+      font-size: .52rem;
+      padding: 1px 5px;
+      border-radius: 2px;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    .pr {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .67rem;
+      margin-bottom: 3px;
+    }
+
+    .pd {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #222;
+      flex-shrink: 0;
+    }
+
+    .pd.on {
+      background: var(--g);
+      box-shadow: 0 0 7px var(--g);
+    }
+
+    .pl {
+      font-size: .6rem;
+      color: rgba(255, 255, 255, .5);
+    }
+
+    .sr {
+      display: flex;
+      justify-content: space-between;
+      font-size: .65rem;
+      margin-bottom: 3px;
+    }
+
+    .sv {
+      color: #fff;
+    }
+
+    /* Alert log */
+    #alog {
+      font-size: .57rem;
+      line-height: 1.6;
+      max-height: 90px;
+      overflow-y: auto;
+    }
+
+    #alog .ae {
+      color: var(--r);
+    }
+
+    #alog .aw {
+      color: var(--a);
+    }
+
+    #alog .ai {
+      color: rgba(0, 255, 136, .55);
+    }
+
+    #dbg {
+      font-size: .56rem;
+      line-height: 1.5;
+      color: rgba(0, 255, 136, .45);
+      max-height: 80px;
+      overflow-y: auto;
+      word-break: break-all;
+    }
+
+    #dbg span.k {
+      color: var(--a);
+    }
+
+    #dbg span.v {
+      color: rgba(0, 255, 136, .85);
+    }
+
+    footer {
+      padding: 4px 14px;
+      border-top: 1px solid var(--bdr);
+      background: var(--panel);
+      font-size: .6rem;
+      display: flex;
+      gap: 18px;
+      color: rgba(0, 255, 136, .35);
+      flex-shrink: 0;
+    }
+
+    footer strong {
+      color: var(--g);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">LD<span>2450</span> RADAR</div>
+    <div id="bnr-inline"
+      style="font-size:.68rem;color:var(--r);letter-spacing:2px;display:none;animation:pulse 1.2s infinite;"></div>
+    <div class="hdr-r">
+      <div><span class="sdot" id="sd"></span><span id="st">DISCONNECTED</span></div>
+      <form class="ipf" onsubmit="conn(event)">
+        <input id="ipin" placeholder="ESP32 IP">
+        <button type="submit">CONNECT</button>
+      </form>
+    </div>
+  </header>
+  <main>
+    <div id="rw"><canvas id="cb"></canvas><canvas id="ct"></canvas></div>
+    <aside>
+      <!-- SYSTEM THREAT -->
+      <div class="ps">
+        <div class="pt">SYSTEM THREAT LEVEL</div>
+        <div class="threat-bar-wrap">
+          <div class="threat-bar" id="sbar" style="width:0%"></div>
+        </div>
+        <div class="tval" id="sval" style="color:var(--g)">0%</div>
+      </div>
+      <!-- TARGETS -->
+      <div class="ps">
+        <div class="pt">TARGETS</div>
+        <div class="tc t1" id="tc1">
+          <div class="tl t1">
+            <div class="dl"></div>TARGET 1 <span class="cls-badge" id="cls1"
+              style="background:rgba(0,255,136,.15);color:var(--g)">ABSENT</span>
+          </div>
+          <div class="td">
+            <em>X</em> <span id="t1x">—</span> mm &nbsp;<em>Y</em> <span id="t1y">—</span> mm<br>
+            <em>SPD</em> <span id="t1s">—</span>&nbsp;&nbsp;<em>DIR</em> <span id="t1d">—</span><br>
+            <em>THREAT</em> <span id="t1t">0</span>%
+            <div class="tbr">
+              <div class="tbr-f" id="tb1" style="width:0%;background:var(--g)"></div>
+            </div>
+            <em>ALERT</em> <span id="al1" style="color:var(--g)">CLEAR</span>
+          </div>
+        </div>
+        <div class="tc t2" id="tc2">
+          <div class="tl t2">
+            <div class="dl"></div>TARGET 2 <span class="cls-badge" id="cls2"
+              style="background:rgba(255,170,0,.15);color:var(--a)">ABSENT</span>
+          </div>
+          <div class="td">
+            <em>X</em> <span id="t2x">—</span> mm &nbsp;<em>Y</em> <span id="t2y">—</span> mm<br>
+            <em>SPD</em> <span id="t2s">—</span>&nbsp;&nbsp;<em>DIR</em> <span id="t2d">—</span><br>
+            <em>THREAT</em> <span id="t2t">0</span>%
+            <div class="tbr">
+              <div class="tbr-f" id="tb2" style="width:0%;background:var(--a)"></div>
+            </div>
+            <em>ALERT</em> <span id="al2" style="color:var(--g)">CLEAR</span>
+          </div>
+        </div>
+        <div class="tc t3" id="tc3">
+          <div class="tl t3">
+            <div class="dl"></div>TARGET 3 <span class="cls-badge" id="cls3"
+              style="background:rgba(0,170,255,.15);color:var(--b)">ABSENT</span>
+          </div>
+          <div class="td">
+            <em>X</em> <span id="t3x">—</span> mm &nbsp;<em>Y</em> <span id="t3y">—</span> mm<br>
+            <em>SPD</em> <span id="t3s">—</span>&nbsp;&nbsp;<em>DIR</em> <span id="t3d">—</span><br>
+            <em>THREAT</em> <span id="t3t">0</span>%
+            <div class="tbr">
+              <div class="tbr-f" id="tb3" style="width:0%;background:var(--b)"></div>
+            </div>
+            <em>ALERT</em> <span id="al3" style="color:var(--g)">CLEAR</span>
+          </div>
+        </div>
+      </div>
+      <!-- ZONES -->
+      <div class="ps">
+        <div class="pt">ZONES</div>
+        <div class="pr">
+          <div class="pd" id="zap"></div>
+          <div class="pl">ANY PRESENCE</div>
+        </div>
+        <div class="pr">
+          <div class="pd" id="z1p"></div>
+          <div class="pl">ZONE 1</div>
+        </div>
+        <div class="pr">
+          <div class="pd" id="z2p"></div>
+          <div class="pl">ZONE 2</div>
+        </div>
+        <div class="pr">
+          <div class="pd" id="z3p"></div>
+          <div class="pl">ZONE 3</div>
+        </div>
+        <div class="pr">
+          <div class="pd" id="z4p"></div>
+          <div class="pl">ZONE 4</div>
+        </div>
+        <div class="pr">
+          <div class="pd" id="z5p"></div>
+          <div class="pl">ZONE 5</div>
+        </div>
+        <div class="pr">
+          <div class="pd" id="z6p"></div>
+          <div class="pl">ZONE 6</div>
+        </div>
+      </div>
+      <!-- STATS -->
+      <div class="ps">
+        <div class="pt">STATS</div>
+        <div class="sr"><span>TARGETS</span><span class="sv" id="tcnt">0</span></div>
+        <div class="sr"><span>EVENTS/s</span><span class="sv" id="eps">—</span></div>
+        <div class="sr"><span>RSSI</span><span class="sv" id="rssi">—</span></div>
+      </div>
+      <!-- ALERT LOG -->
+      <div class="ps">
+        <div class="pt">ALERT LOG</div>
+        <div id="alog"><span class="ai">System ready</span></div>
+      </div>
+      <!-- DEBUG -->
+      <div class="ps">
+        <div class="pt">DEBUG</div>
+        <div id="dbg">Waiting...</div>
+      </div>
+    </aside>
+  </main>
+  <footer>
+    <span>LD<strong>2450</strong> RADAR + ANALYTICS</span>
+    <span>ESP32 @ <strong id="fip">—</strong></span>
+    <span>RANGE <strong>±4m × 8m</strong></span>
+  </footer>
+  <script>
+    // ─── State ──────────────────────────────────────────────────────
+    const T = [
+      { x: null, y: null, spd: null, dir: '—', ts: 0, color: '#00ff88', trail: [], threat: 0, predX: null, predY: null, cls: 'ABSENT', alrt: 'CLEAR' },
+      { x: null, y: null, spd: null, dir: '—', ts: 0, color: '#ffaa00', trail: [], threat: 0, predX: null, predY: null, cls: 'ABSENT', alrt: 'CLEAR' },
+      { x: null, y: null, spd: null, dir: '—', ts: 0, color: '#00aaff', trail: [], threat: 0, predX: null, predY: null, cls: 'ABSENT', alrt: 'CLEAR' },
+    ];
+    const Z = {};
+    const STALE = 3500;
+    let ip = window.location.hostname || '192.168.1.14', es = null;
+    let evCount = 0, lastEvTime = Date.now(), sweepAngle = 0;
+    let systemThreat = 0;
+    const alertLog = [];
+
+    // ─── Canvas ─────────────────────────────────────────────────────
+    const cb = document.getElementById('cb'), ct = document.getElementById('ct');
+    const bc = cb.getContext('2d'), tc = ct.getContext('2d');
+    const WW = 4000, WH = 8000;
+
+    function resize() {
+      const wr = document.getElementById('rw');
+      const sz = Math.min(wr.clientWidth - 8, wr.clientHeight - 8);
+      cb.width = cb.height = ct.width = ct.height = sz;
+      cb.style.width = cb.style.height = ct.style.width = ct.style.height = sz + 'px';
+      drawBase();
+    }
+    window.addEventListener('resize', resize);
+
+    function w2c(wx, wy) { const s = cb.width; return { cx: s / 2 + (wx / WW) * (s / 2), cy: s - (wy / WH) * s }; }
+
+    function threatColor(t) {
+      const r = Math.min(255, Math.round(t * 5.1));
+      const g = Math.min(255, Math.round((100 - t) * 2.55 + 50));
+      return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + '32';
+    }
+
+    function drawBase() {
+      const s = cb.width, x = bc;
+      x.clearRect(0, 0, s, s);
+      x.fillStyle = '#030a06'; x.fillRect(0, 0, s, s);
+      x.save(); x.beginPath(); x.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2); x.clip();
+      for (let d = 1000; d <= 8000; d += 1000) {
+        const f = d / WH, r = f * s;
+        x.beginPath(); x.arc(s / 2, s, r, -Math.PI, 0);
+        x.strokeStyle = d % 2000 === 0 ? 'rgba(0,255,136,.15)' : 'rgba(0,255,136,.05)';
+        x.lineWidth = d % 2000 === 0 ? 1 : .5; x.stroke();
+        if (d % 2000 === 0) {
+          x.fillStyle = 'rgba(0,255,136,.4)';
+          x.font = `${Math.max(9, s * .016)}px 'Share Tech Mono'`;
+          x.fillText((d / 1000) + 'm', s / 2 + 3, s - f * s + 12);
+        }
+      }
+      for (let a = -60; a <= 60; a += 30) {
+        const r = a * Math.PI / 180;
+        x.beginPath(); x.moveTo(s / 2, s); x.lineTo(s / 2 + Math.sin(r) * s, s - Math.cos(r) * s);
+        x.strokeStyle = 'rgba(0,255,136,.07)'; x.lineWidth = .5; x.stroke();
+      }
+      const pts = [[0, 0], [1000, 500], [3700, 3700], [3500, 6000], [2000, 7400], [0, 8000],
+      [-2000, 7400], [-3500, 6000], [-3700, 3700], [-1000, 500], [0, 0]];
+      x.beginPath();
+      pts.forEach(([a, b], i) => { const { cx, cy } = w2c(a, b); i === 0 ? x.moveTo(cx, cy) : x.lineTo(cx, cy); });
+      x.strokeStyle = 'rgba(0,255,136,.18)'; x.lineWidth = 1; x.setLineDash([3, 6]); x.stroke(); x.setLineDash([]);
+      const o = w2c(0, 0);
+      x.beginPath(); x.arc(o.cx, o.cy, 5, 0, Math.PI * 2);
+      x.fillStyle = '#fff'; x.shadowColor = '#fff'; x.shadowBlur = 14; x.fill(); x.shadowBlur = 0;
+      x.restore();
+    }
+
+    function drawTargets() {
+      const s = ct.width, x = tc, now = Date.now();
+      x.clearRect(0, 0, s, s);
+      x.save(); x.beginPath(); x.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2); x.clip();
+      // Sweep
+      sweepAngle = (sweepAngle + 1.8) % 360;
+      const sr = (sweepAngle - 90) * Math.PI / 180;
+      x.beginPath(); x.moveTo(s / 2, s);
+      x.lineTo(s / 2 + Math.cos(sr) * s * 1.6, s + Math.sin(sr) * s * 1.6);
+      const sweepCol = systemThreat > 70 ? 'rgba(255,51,102,.6)' : systemThreat > 40 ? 'rgba(255,170,0,.55)' : 'rgba(0,255,136,.55)';
+      x.strokeStyle = sweepCol; x.lineWidth = 2; x.shadowColor = sweepCol; x.shadowBlur = 10; x.stroke(); x.shadowBlur = 0;
+
+      // Sweep fade sector
+      const fadeGrad = x.createConicalGradient ? null : null; // not widely supported, skip
+
+      // Zones
+      const zc = ['#00ff88', '#ffaa00', '#0055ff', '#ffe000', '#009600', '#ff0090'];
+      for (let z = 1; z <= 6; z++) {
+        const zd = Z[z]; if (!zd || (!zd.w && !zd.h)) continue;
+        const c = zc[z - 1];
+        const { cx: x1, cy: y1 } = w2c(zd.x, zd.y);
+        const { cx: x2, cy: y2 } = w2c(zd.x - zd.w, zd.y + zd.h);
+        const rx = Math.min(x1, x2), ry = Math.min(y1, y2), rw = Math.abs(x2 - x1), rh = Math.abs(y2 - y1);
+        x.beginPath(); x.rect(rx, ry, rw, rh);
+        x.fillStyle = zd.presence ? c + '44' : c + '18'; x.fill();
+        x.strokeStyle = c; x.globalAlpha = zd.presence ? .8 : .22; x.lineWidth = 1.5; x.stroke(); x.globalAlpha = 1;
+        x.fillStyle = c; x.font = `${Math.max(8, s * .014)}px Orbitron`;
+        x.textAlign = 'center'; x.fillText('Z' + z, rx + rw / 2, ry + rh / 2 + 4); x.textAlign = 'left';
+      }
+
+      try {
+        T.forEach((t, i) => {
+          const age = now - t.ts;
+          const active = t.x !== null && t.y !== null && age < STALE;
+          if (!active) return;
+          const alpha = Math.max(0.2, 1 - age / STALE);
+          const tc_ = threatColor(t.threat);
+
+          // Trail
+          if (t.trail.length > 1) {
+            x.beginPath();
+            t.trail.forEach(([a, b], j) => { const { cx, cy } = w2c(a, b); j === 0 ? x.moveTo(cx, cy) : x.lineTo(cx, cy); });
+            x.strokeStyle = tc_; x.globalAlpha = alpha * .28; x.lineWidth = 2; x.stroke(); x.globalAlpha = 1;
+          }
+
+          // Prediction arrow
+          if (t.predX !== null && t.predY !== null && t.cls !== 'ABSENT' && t.cls !== 'STATIC') {
+            const { cx, cy } = w2c(t.x, t.y);
+            const { cx: px, cy: py } = w2c(t.predX, t.predY);
+            x.beginPath(); x.moveTo(cx, cy); x.lineTo(px, py);
+            x.strokeStyle = tc_; x.globalAlpha = alpha * .5; x.lineWidth = 1.5;
+            x.setLineDash([4, 6]); x.stroke(); x.setLineDash([]); x.globalAlpha = 1;
+            const ang = Math.atan2(py - cy, px - cx);
+            const alen = 10;
+            x.beginPath();
+            x.moveTo(px, py);
+            x.lineTo(px - alen * Math.cos(ang - .45), py - alen * Math.sin(ang - .45));
+            x.lineTo(px - alen * Math.cos(ang + .45), py - alen * Math.sin(ang + .45));
+            x.closePath();
+            x.fillStyle = tc_; x.globalAlpha = alpha * .6; x.fill(); x.globalAlpha = 1;
+          }
+
+          const { cx, cy } = w2c(t.x, t.y);
+          // Glow — tc_ is now hex so tc_+'99' = valid 8-char hex with alpha
+          const glowR = 16 + t.threat * .2;
+          const gr = x.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+          gr.addColorStop(0, tc_ + '99'); gr.addColorStop(1, 'transparent');
+          x.beginPath(); x.arc(cx, cy, glowR, 0, Math.PI * 2);
+          x.fillStyle = gr; x.globalAlpha = alpha; x.fill(); x.globalAlpha = 1;
+
+          // Dot
+          x.beginPath(); x.arc(cx, cy, 7, 0, Math.PI * 2);
+          x.fillStyle = tc_; x.shadowColor = tc_; x.shadowBlur = 18;
+          x.globalAlpha = alpha; x.fill(); x.shadowBlur = 0; x.globalAlpha = 1;
+
+          // Label
+          const dist = Math.round(Math.sqrt(t.x ** 2 + t.y ** 2) / 10) / 100;
+          x.fillStyle = tc_;
+          x.font = `bold ${Math.max(9, s * .018)}px 'Share Tech Mono'`;
+          x.globalAlpha = alpha;
+          x.fillText(`T${i + 1} ${dist}m`, cx + 10, cy - 12);
+          if (t.cls && t.cls !== 'ABSENT') {
+            x.font = `${Math.max(8, s * .014)}px 'Share Tech Mono'`;
+            x.fillText(t.cls, cx + 10, cy + 2);
+          }
+          x.globalAlpha = 1;
+
+          // Threat ring for high-threat
+          if (t.threat > 60) {
+            x.beginPath(); x.arc(cx, cy, 12 + Math.sin(now / 200) * 3, 0, Math.PI * 2);
+            x.strokeStyle = tc_; x.globalAlpha = alpha * (.3 + Math.sin(now / 300) * .2);
+            x.lineWidth = 2; x.stroke(); x.globalAlpha = 1;
+          }
+        });
+      } finally {
+        x.restore();  // ALWAYS restore clip state, even if a target throws
+      }
+      updateSidebar();
+    }
+
+    function clsStyle(cls) {
+      switch (cls) {
+        case 'VEHICLE': return ['rgba(255,51,102,.25)', '#ff3366'];
+        case 'RUNNING': return ['rgba(255,100,0,.2)', '#ff6400'];
+        case 'WALKING': return ['rgba(255,170,0,.2)', '#ffaa00'];
+        case 'CREEPING': return ['rgba(200,255,0,.15)', '#c8ff00'];
+        case 'STATIC': return ['rgba(0,255,136,.12)', '#00ff88'];
+        default: return ['rgba(255,255,255,.05)', 'rgba(255,255,255,.3)'];
+      }
+    }
+
+    function alertColor(a) {
+      if (a === 'THREAT') return '#ff3366';
+      if (a === 'LOITERING') return '#ff6400';
+      if (a === 'APPROACHING') return '#ffaa00';
+      return '#00ff88';
+    }
+
+    function updateSidebar() {
+      const now = Date.now();
+      // System threat gauge
+      const sc = threatColor(systemThreat);
+      document.getElementById('sbar').style.cssText = `width:${systemThreat}%;background:${sc};`;
+      document.getElementById('sval').style.color = sc;
+      document.getElementById('sval').textContent = Math.round(systemThreat) + '%';
+
+      T.forEach((t, i) => {
+        const n = i + 1, age = now - t.ts;
+        const on = t.x !== null && t.y !== null && age < STALE;
+        document.getElementById('tc' + n).className = 'tc t' + n + (on ? ' on' : '');
+        document.getElementById('t' + n + 'x').textContent = on ? Math.round(t.x) : '—';
+        document.getElementById('t' + n + 'y').textContent = on ? Math.round(t.y) : '—';
+        document.getElementById('t' + n + 's').textContent = on && t.spd !== null ? t.spd.toFixed(1) + ' m/s' : '—';
+        document.getElementById('t' + n + 'd').textContent = on ? t.dir : '—';
+        document.getElementById('t' + n + 't').textContent = on ? Math.round(t.threat) : 0;
+        document.getElementById('tb' + n).style.cssText = `width:${on ? t.threat : 0}%;background:${threatColor(on ? t.threat : 0)};`;
+        const ac = alertColor(t.alrt);
+        document.getElementById('al' + n).textContent = on ? t.alrt : '—';
+        document.getElementById('al' + n).style.color = on ? ac : 'rgba(255,255,255,.3)';
+        const [bg, fg] = clsStyle(on ? t.cls : 'ABSENT');
+        const cls = document.getElementById('cls' + n);
+        cls.textContent = on ? t.cls : 'ABSENT';
+        cls.style.background = bg; cls.style.color = fg;
+      });
+
+      // Header inline alert
+      const active = T.filter((_, i) => { const age = now - T[i].ts; return T[i].x !== null && age < STALE && T[i].alrt !== 'CLEAR'; });
+      const inl = document.getElementById('bnr-inline');
+      if (active.length > 0) {
+        const worst = active.reduce((a, b) => (['THREAT', 'LOITERING', 'APPROACHING', 'CLEAR'].indexOf(a.alrt) < ['THREAT', 'LOITERING', 'APPROACHING', 'CLEAR'].indexOf(b.alrt) ? a : b));
+        inl.style.display = 'block';
+        inl.textContent = '⚠ ' + worst.alrt + ' — T' + (T.indexOf(worst) + 1);
+      } else {
+        inl.style.display = 'none';
+      }
+    }
+
+    // ─── Animation ────────────────────────────────────────────────────
+    function loop() { drawTargets(); requestAnimationFrame(loop); } loop();
+
+    // ─── Alert log ────────────────────────────────────────────────────
+    function pushAlert(msg, cls) {
+      const el = document.getElementById('alog');
+      const now = new Date();
+      const ts = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+      alertLog.unshift({ msg, cls, ts });
+      if (alertLog.length > 20) alertLog.pop();
+      el.innerHTML = alertLog.slice(0, 8).map(a => `<span class="${a.cls}">[${a.ts}] ${a.msg}</span>`).join('<br>');
+    }
+
+    // ─── SSE Event Handler ────────────────────────────────────────────
+    const dbgEl = document.getElementById('dbg');
+    const dbgBuf = [];
+    function dbgShow(id, val) {
+      const s = id.replace(/^[a-z_]+-_/, '').substring(0, 26);
+      dbgBuf.push(`<span class=k>${s}</span>=<span class=v>${val}</span>`);
+      if (dbgBuf.length > 6) dbgBuf.shift();
+      dbgEl.innerHTML = dbgBuf.join('<br>');
+    }
+
+    function handleEvent(d) {
+      evCount++;
+      const id = d.id || '';
+      const val = parseFloat(d.value ?? 0);
+      const str = String(d.value ?? '');
+      dbgShow(id, str);
+
+      let m;
+      // ── Raw target position ──
+      m = id.match(/sensor-_target([123])_x$/);
+      if (m) { const i = +m[1] - 1; T[i].x = val; T[i].ts = Date.now(); return; }
+      m = id.match(/sensor-_target([123])_y$/);
+      if (m) {
+        const i = +m[1] - 1; T[i].y = val; T[i].ts = Date.now();
+        if (T[i].x !== null) { T[i].trail.push([T[i].x, val]); if (T[i].trail.length > 25) T[i].trail.shift(); } return;
+      }
+      m = id.match(/sensor-_target([123])_speed$/);
+      if (m) { T[+m[1] - 1].spd = val; return; }
+      m = id.match(/text_sensor-_target([123])_direction$/);
+      if (m) { T[+m[1] - 1].dir = str || '—'; return; }
+
+      // ── Analytics: threat scores ──
+      m = id.match(/sensor-_target([123])_threat$/);
+      if (m) { T[+m[1] - 1].threat = val; return; }
+      if (id.includes('system_threat')) { systemThreat = val; return; }
+
+      // ── Analytics: predicted positions ──
+      m = id.match(/sensor-_target([123])_pred_x$/);
+      if (m) { T[+m[1] - 1].predX = val; return; }
+      m = id.match(/sensor-_target([123])_pred_y$/);
+      if (m) { T[+m[1] - 1].predY = val; return; }
+
+      // ── Analytics: classification ──
+      m = id.match(/text_sensor-_target([123])_ml_class$/);
+      if (m) { T[+m[1] - 1].cls = str; return; }
+
+      // ── Analytics: alerts ── (with log pushes on state changes)
+      m = id.match(/text_sensor-_target([123])_alert$/);
+      if (m) {
+        const idx = +m[1] - 1;
+        if (T[idx].alrt !== str) {
+          if (str === 'THREAT') pushAlert(`T${idx + 1} HIGH THREAT DETECTED`, 'ae');
+          else if (str === 'LOITERING') pushAlert(`T${idx + 1} LOITERING DETECTED`, 'aw');
+          else if (str === 'APPROACHING') pushAlert(`T${idx + 1} APPROACHING`, 'aw');
+          else if (str === 'CLEAR' && T[idx].alrt !== 'CLEAR') pushAlert(`T${idx + 1} cleared`, 'ai');
+        }
+        T[idx].alrt = str; return;
+      }
+
+      // ── Zones ──
+      if (id === 'binary_sensor-_any_presence' || id.endsWith('any_presence')) {
+        const on = d.value === true || str === 'ON';
+        document.getElementById('zap').className = 'pd' + (on ? ' on' : ''); return;
+      }
+      m = id.match(/binary_sensor-_zone([1-6])_presence$/);
+      if (m) {
+        const zi = +m[1]; if (!Z[zi]) Z[zi] = { x: 0, y: 0, w: 0, h: 0, presence: false };
+        Z[zi].presence = d.value === true || str === 'ON';
+        document.getElementById('z' + zi + 'p').className = 'pd' + (Z[zi].presence ? ' on' : ''); return;
+      }
+      m = id.match(/number-_zone([1-6])_(x|y|width|height)$/);
+      if (m) {
+        const zi = +m[1], f = m[2]; if (!Z[zi]) Z[zi] = { x: 0, y: 0, w: 0, h: 0, presence: false };
+        Z[zi][f === 'width' ? 'w' : f === 'height' ? 'h' : f] = val; return;
+      }
+
+      // ── Other ──
+      if (id.includes('all_target')) { document.getElementById('tcnt').textContent = val; return; }
+      if (id.includes('rssi')) { document.getElementById('rssi').textContent = val + ' dBm'; }
+    }
+
+    // ─── Connection ────────────────────────────────────────────────────
+    function setLive(ok) {
+      document.getElementById('sd').className = 'sdot' + (ok ? ' live' : ' err');
+      document.getElementById('st').textContent = ok ? 'LIVE' : 'CONNECTING...';
+      document.getElementById('fip').textContent = ok ? ip : '—';
+    }
+
+    function conn(e) {
+      if (e) e.preventDefault();
+      ip = document.getElementById('ipin').value.trim() || ip;
+      if (es) { es.close(); es = null; }
+      setLive(false);
+      dbgEl.textContent = 'Connecting to ' + ip + '...';
+      es = new EventSource(`http://${ip}/events`);
+      es.onerror = () => { setLive(false); };
+      es.addEventListener('state', ev => {
+        try { handleEvent(JSON.parse(ev.data)); lastEvTime = Date.now(); setLive(true); } catch (_) { }
+      });
+    }
+
+    // ─── Events/sec + staleness ─────────────────────────────────────
+    setInterval(() => {
+      document.getElementById('eps').textContent = evCount + '/s';
+      evCount = 0;
+      if (Date.now() - lastEvTime > 6000) setLive(false);
+    }, 1000);
+
+    // ─── Init ──────────────────────────────────────────────────────────
+    resize();
+    document.getElementById('ipin').value = ip;
+    pushAlert('Radar system online', 'ai');
+    conn();
+  </script>
+</body>
+
+</html>

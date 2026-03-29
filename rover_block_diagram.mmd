@@ -1,0 +1,54 @@
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#ffffff',
+    'primaryBorderColor': '#000000',
+    'primaryTextColor': '#000000',
+    'lineColor': '#000000'
+  },
+  'flowchart': {
+    'curve': 'step'
+  }
+}}%%
+flowchart TD
+    classDef box fill:#ffffff,stroke:#000000,stroke-width:2px,color:#000000,font-weight:bold,rx:0,ry:0,padding:20px
+
+    BATT[2S LIPO BATTERY]:::box
+    PD[POWER DISTRIBUTION]:::box
+    
+    TX[RC TRANSMITTER]:::box
+    RX[RC RECEIVER]:::box
+    
+    CTRL[ONBOARD CONTROLLER]:::box
+    
+    MD[MOTOR DRIVER]:::box
+    MOT[4x DC MOTORS]:::box
+    
+    CAM[ANALOG FPV CAMERA]:::box
+    VTX[5.8GHz VTX]:::box
+    GOG[FPV GOGGLES]:::box
+    
+    RAD[LD2450 RADAR]:::box
+    ESP[ESP32 RADAR SENDER]:::box
+    DIS[DASHBOARD DISPLAY]:::box
+
+    %% Power Network
+    BATT --> PD
+    PD --> CTRL
+    PD --> VTX
+    PD --> ESP
+    PD --> MD
+
+    %% Pillar 1: Command & Drive
+    TX -.->|RC Link| RX
+    RX --> CTRL
+    CTRL --> MD
+    MD --> MOT
+
+    %% Pillar 2: Vision
+    CAM --> VTX
+    VTX -.->|5.8GHz RF| GOG
+
+    %% Pillar 3: Radar Sensing
+    RAD --> ESP
+    ESP -.->|ESP-NOW| DIS

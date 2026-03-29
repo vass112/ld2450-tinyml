@@ -1,0 +1,70 @@
+﻿esphome : INFO ESPHome 2026.2.4
+At line:1 char:1
++ esphome compile elecrow-display.yaml 2>&1 | Out-File -FilePath compil ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO ESPHome 2026.2.4:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO Reading configuration elecrow-display.yaml...
+INFO Generating C++ source...
+INFO Setting CONFIG_LWIP_MAX_SOCKETS to 13 (registered: captive_portal=4, mdns=2, ota=1, web_server=6)
+INFO Compiling app... Build path: C:\Users\DELL\Desktop\ld2450-tinyml\Elecrow_HMI\.esphome\build\elecrow-display
+Processing elecrow-display (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32/releases/download/55.03.37/platform-espressif32.zip)
+
+--------------------------------------------------------------------------------
+
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 4MB Flash
+
+ - contrib-piohome @ 3.4.4 
+
+ - framework-espidf @ 3.50502.0 (5.5.2) 
+
+ - tool-cmake @ 4.0.3 
+
+ - tool-esp-rom-elfs @ 2024.10.11 
+
+ - tool-esptoolpy @ 5.1.2 
+
+ - tool-ninja @ 1.13.1 
+
+ - tool-scons @ 4.40801.0 (4.8.1) 
+
+ - toolchain-xtensa-esp-elf @ 14.2.0+20251107
+
+Reading CMake configuration...
+
+No dependencies
+
+Compiling .pioenvs\elecrow-display\src\main.cpp.o
+
+In file included from src/main.cpp:88:
+
+src/radar_client.h:3:10: fatal error: esp_http_client.h: No such file or directory
+
+
+
+*******************************************************************************
+
+* Looking for esp_http_client.h dependency? Check our library registry!
+
+*
+
+* CLI  > platformio lib search "header:esp_http_client.h"
+
+* Web  > https://registry.platformio.org/search?q=header:%1B%5Bm%1B%5BKesp_http_client.h
+
+*
+
+*******************************************************************************
+
+
+
+    3 | #include "esp_http_client.h"
+
+      |          ^~~~~~~~~~~~~~~~~~~
+compilation terminated.
+
+*** [.pioenvs\elecrow-display\src\main.cpp.o] Error 1
+
+========================= [FAILED] Took 14.83 seconds =========================
+

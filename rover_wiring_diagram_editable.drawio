@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+<mxfile version="14.6.13" type="device">
+  <diagram name="Page-1">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="c_bat" value="&lt;b&gt;2S LiPo Battery&lt;/b&gt;&lt;br&gt;7.4V Power" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#34495E;strokeColor=#273746;fontColor=#F1C40F;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="250" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_rx" value="&lt;b&gt;ES900X RX&lt;/b&gt;&lt;br&gt;(Telemetry/Control)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#17202A;strokeColor=#000000;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="150" y="100" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_node" value="&lt;b&gt;ESP8266 NodeMCU&lt;/b&gt;&lt;br&gt;(Rover Controller)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#239B56;strokeColor=#186A3B;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="350" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_esp" value="&lt;b&gt;ESP32 Node&lt;/b&gt;&lt;br&gt;(Radar Processor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#17202A;strokeColor=#000000;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="550" y="100" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_ld" value="&lt;b&gt;LD2450&lt;/b&gt;&lt;br&gt;(Radar Sensor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#17202A;strokeColor=#000000;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="750" y="100" width="100" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_cam" value="&lt;b&gt;FPV Camera&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2874A6;strokeColor=#1B4F72;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="250" width="100" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_vtx" value="&lt;b&gt;5.8GHz VTX&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2874A6;strokeColor=#1B4F72;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="450" y="250" width="100" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_drv" value="&lt;b&gt;HW-354 L298N&lt;/b&gt;&lt;br&gt;Dual H-Bridge Motor Driver" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CB4335;strokeColor=#922B21;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="350" y="450" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_mtl" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (L-Top)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="400" width="80" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_mbl" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (L-Bot)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="80" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_mtr" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (R-Top)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="650" y="400" width="80" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_mbr" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (R-Bot)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="650" y="550" width="80" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_1" value="7.4V" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.25;entryX=0;entryY=0.75;" edge="1" parent="1" source="c_bat" target="c_node">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_2" value="7.4V (to VMOT)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.75;entryX=0;entryY=0.25;" edge="1" parent="1" source="c_bat" target="c_drv">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_3" value="7.4V" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.75;" edge="1" parent="1" source="c_bat" target="c_esp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_4" value="7.4V" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_bat" target="c_cam">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_5" value="7.4V" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=1;" edge="1" parent="1" source="c_bat" target="c_vtx">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_6" value="GND" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2C3E50;strokeWidth=3;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_bat" target="c_drv">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_7" value="GND" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2C3E50;strokeWidth=3;exitX=1;exitY=0.2;entryX=0;entryY=0.8;" edge="1" parent="1" source="c_bat" target="c_node">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_8" value="3.3V Power" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F39C12;strokeWidth=2.5;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="c_node" target="c_rx">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_9" value="3.3V Power" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F39C12;strokeWidth=2.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_esp" target="c_ld">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_10" value="UART TX -&gt; RX" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#27AE60;strokeWidth=2;exitX=1;exitY=0.2;entryX=0;entryY=0.2;" edge="1" parent="1" source="c_rx" target="c_node">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_11" value="UART TX2-&gt;RX" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#27AE60;strokeWidth=2;exitX=1;exitY=0.2;entryX=0;entryY=0.2;" edge="1" parent="1" source="c_esp" target="c_ld">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_12" value="UART TX-&gt;RX2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#27AE60;strokeWidth=2;exitX=0;exitY=0.8;entryX=1;entryY=0.8;" edge="1" parent="1" source="c_ld" target="c_esp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_13" value="D1-D4 -&gt; IN1-IN4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8E44AD;strokeWidth=2.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c_node" target="c_drv">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_14" value="OUT1/2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="c_drv" target="c_mtl">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_15" value="OUT1/2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=0;exitY=0.75;entryX=1;entryY=0.5;" edge="1" parent="1" source="c_drv" target="c_mbl">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_16" value="OUT3/4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_drv" target="c_mtr">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_17" value="OUT3/4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.75;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_drv" target="c_mbr">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_18" value="Video Out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#F1C40F;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_cam" target="c_vtx">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

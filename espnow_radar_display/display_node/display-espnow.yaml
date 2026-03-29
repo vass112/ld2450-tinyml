@@ -1,0 +1,198 @@
+# ESP-NOW Display Node — CrowPanel 7" ESP32-S3 Radar Visualization
+# Receives RadarPacket via ESP-NOW, renders LVGL-style radar UI
+# NO web server, NO HTTP — just ESP-NOW + display + OTA
+substitutions:
+  devicename: radar-display
+  friendly_name: Radar Display
+
+esphome:
+  name: $devicename
+  friendly_name: ${friendly_name}
+  platformio_options:
+    board_build.flash_mode: dio
+  on_boot:
+    - priority: 600
+      then:
+        - output.turn_on: backlight
+  includes:
+    - espnow_receiver.h
+    - ../common/radar_packet.h
+    - radar_ui.h
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
+      CONFIG_ESP32S3_SPIRAM_SUPPORT: "y"
+      CONFIG_SPIRAM_MODE_OCT: "y"
+      CONFIG_SPIRAM_SPEED_80M: "y"
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+
+api:
+
+ota:
+  platform: esphome
+  password: "hpsz1234"
+
+wifi:
+  ap:
+    ssid: "RadarDisplay"
+    password: "radarpass1234"
+    channel: 1
+  power_save_mode: NONE
+
+
+output:
+  - platform: gpio
+    pin: GPIO2
+    id: backlight
+
+i2c:
+  sda: 19
+  scl: 20
+  scan: true
+
+touchscreen:
+  - platform: gt911
+    id: my_touchscreen
+    display: my_display
+
+globals:
+  - id: t1_x
+    type: float
+    initial_value: '0'
+  - id: t1_y
+    type: float
+    initial_value: '0'
+  - id: t1_speed
+    type: float
+    initial_value: '0'
+  - id: t1_threat
+    type: float
+    initial_value: '0'
+  - id: t1_active
+    type: bool
+    initial_value: 'false'
+  - id: t2_x
+    type: float
+    initial_value: '0'
+  - id: t2_y
+    type: float
+    initial_value: '0'
+  - id: t2_speed
+    type: float
+    initial_value: '0'
+  - id: t2_threat
+    type: float
+    initial_value: '0'
+  - id: t2_active
+    type: bool
+    initial_value: 'false'
+  - id: t3_x
+    type: float
+    initial_value: '0'
+  - id: t3_y
+    type: float
+    initial_value: '0'
+  - id: t3_speed
+    type: float
+    initial_value: '0'
+  - id: t3_threat
+    type: float
+    initial_value: '0'
+  - id: t3_active
+    type: bool
+    initial_value: 'false'
+  - id: sys_threat
+    type: float
+    initial_value: '0'
+  - id: radar_connected
+    type: bool
+    initial_value: 'false'
+  - id: target_count
+    type: int
+    initial_value: '0'
+
+# Init ESP-NOW and LVGL, then copy data and update UI
+interval:
+  - interval: 33ms
+    then:
+      - lambda: |-
+          static bool started = false;
+          if (!started) {
+            espnow_init_receiver();
+            radar_ui_init();
+            started = true;
+          }
+          espnow_update_globals();
+          
+          radar_ui_update(
+            id(t1_x), id(t1_y), id(t1_speed), id(t1_threat), id(t1_active),
+            id(t2_x), id(t2_y), id(t2_speed), id(t2_threat), id(t2_active),
+            id(t3_x), id(t3_y), id(t3_speed), id(t3_threat), id(t3_active),
+            id(sys_threat), id(target_count), id(radar_connected)
+          );
+
+lvgl:
+  displays:
+    - my_display
+  color_depth: 16
+  buffer_size: "50%"
+  pages:
+    - id: main_page
+      widgets:
+        - canvas:
+            id: force_canvas
+            width: 8
+            height: 8
+
+display:
+  - platform: rpi_dpi_rgb
+    id: my_display
+    auto_clear_enabled: false
+    update_interval: 50ms
+    color_order: RGB
+    pclk_frequency: 16MHz
+    dimensions:
+      width: 800
+      height: 480
+    de_pin: 41
+    hsync_pin: 39
+    vsync_pin: 40
+    pclk_pin:
+      number: 0
+      ignore_strapping_warning: true
+    pclk_inverted: true
+    hsync_back_porch: 88
+    hsync_front_porch: 40
+    hsync_pulse_width: 48
+    vsync_back_porch: 32
+    vsync_front_porch: 13
+    vsync_pulse_width: 4
+    data_pins:
+      red:
+        - 14
+        - 21
+        - 47
+        - 48
+        - 45
+      blue:
+        - 15
+        - 7
+        - 6
+        - 5
+        - 4
+      green:
+        - 9
+        - 46
+        - 3
+        - 8
+        - 16
+        - 1

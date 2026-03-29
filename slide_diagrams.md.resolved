@@ -1,0 +1,143 @@
+# Presentation Slides — LD2450 TinyML System
+
+---
+
+## SLIDE 1 — High-Level System Block Diagram
+
+```mermaid
+flowchart LR
+    subgraph SENSOR["  📡  SENSOR  "]
+        LD["HLK-LD2450\n24 GHz Radar"]
+    end
+
+    subgraph ESP["  🧠  ESP32 MICROCONTROLLER  "]
+        PROC["Signal Processing\n+ TinyML Inference"]
+    end
+
+    subgraph OUTPUTS["  📤  OUTPUTS  "]
+        WEB["Radar GUI\nWeb Browser"]
+        HA["Home Assistant\nAutomation"]
+        SSE["Live Data\nSSE Stream"]
+    end
+
+    USER(["👤 Human\nTarget"]) --"Reflects\nRadar Signal"--> LD
+    LD --"UART\n256K baud"--> PROC
+    PROC --"Port 8080"--> WEB
+    PROC --"API"--> HA
+    PROC --"Port 80"--> SSE
+
+    style SENSOR  fill:#1a1a2e,stroke:#00aaff,color:#fff
+    style ESP     fill:#1a1a2e,stroke:#00ff88,color:#fff
+    style OUTPUTS fill:#1a1a2e,stroke:#ffaa00,color:#fff
+```
+
+---
+
+## SLIDE 2 — Firmware Architecture (Inside the ESP32)
+
+```mermaid
+flowchart TD
+    IN(["UART Input\n3 Targets × X, Y, Speed"])
+
+    subgraph CORE["ESP32 Firmware Pipeline"]
+        direction TB
+
+        subgraph PARSE["① Frame Parser"]
+            P["Binary Decoder\n26-byte frames → Position structs"]
+        end
+
+        subgraph FILTER["② Signal Filtering"]
+            KF["Kalman Filter\nNoise Reduction"]
+            EMA["EMA Smoother\nVelocity Stabilisation"]
+            KF --> EMA
+        end
+
+        subgraph INTELLIGENCE["③ Intelligence Layer"]
+            direction LR
+            ML["TinyML\nMLP Classifier\nSTATIC · CREEPING\nWALKING · RUNNING\nPACING"]
+            THREAT["Threat\nScoring\n0 – 100"]
+            LOITER["Loitering\nDetector"]
+            ZONE["Zone\nEngine\n6 Zones"]
+        end
+
+        subgraph SERVE["④ Output & Serving"]
+            SSE_S["SSE Event\nStream"]
+            GUI_S["HTTP Radar\nGUI Server"]
+            API_S["ESPHome\nHA API"]
+        end
+
+        PARSE --> FILTER --> INTELLIGENCE --> SERVE
+    end
+
+    OUT_WEB(["🌐 Browser"])
+    OUT_HA(["🏠 Home Assistant"])
+    OUT_DATA(["📊 Live Data"])
+
+    IN --> CORE
+    GUI_S --> OUT_WEB
+    API_S --> OUT_HA
+    SSE_S --> OUT_DATA
+
+    style PARSE       fill:#0d1b2a,stroke:#00aaff,color:#cff
+    style FILTER      fill:#0d1b2a,stroke:#00ff88,color:#cfc
+    style INTELLIGENCE fill:#0d2a1a,stroke:#ffaa00,color:#ffd
+    style SERVE       fill:#2a1a0d,stroke:#ff6644,color:#fdc
+```
+
+---
+
+## SLIDE 3 — Real-Time Processing Flowchart (Every 200ms)
+
+```mermaid
+flowchart TD
+    A(["⏱️ START\nUART Frame Received"]) --> B
+
+    B["Parse Binary Frame\nExtract: X · Y · Speed\nfor Target 1, 2, 3"] --> C
+
+    C{Target\nDetected?} 
+
+    C -- No --> D["Reset ML Window\nPublish: ABSENT"]
+    D --> END
+
+    C -- Yes --> E
+
+    E["🔵 Kalman Filter\nReduce sensor noise\n±150mm → ±84mm"] --> F
+
+    F["🔵 EMA Smoother\nStabilise velocity\nτ ≈ 1 second"] --> G
+
+    G["🟡 Build Feature Vector\n7 features × 10 frames\n= 70 inputs"] --> H
+
+    H{Window\nFull?\n≥10 frames}
+
+    H -- No\n first 2s --> I["Output: STATIC\n(warmup period)"]
+    I --> END
+
+    H -- Yes --> J
+
+    J["🟠 MLP Inference\nDense 32 → Dense 16\n→ Softmax 5\n~0.5ms"] --> K
+
+    K["🏷️ Classification\nSTATIC · CREEPING\nWALKING · RUNNING\nPACING"] --> L
+
+    L["📢 Publish Results\n• ML Class Entity\n• Threat Score\n• Zone Presence\n• Alert State"] --> END
+
+    END(["⏱️ WAIT\nNext Frame ~200ms"])
+
+    style A    fill:#003366,stroke:#00aaff,color:#fff
+    style END  fill:#003366,stroke:#00aaff,color:#fff
+    style E    fill:#003300,stroke:#00ff88,color:#fff
+    style F    fill:#003300,stroke:#00ff88,color:#fff
+    style J    fill:#332200,stroke:#ffaa00,color:#fff
+    style K    fill:#332200,stroke:#ffaa00,color:#fff
+    style C    fill:#1a1a1a,stroke:#888,color:#fff
+    style H    fill:#1a1a1a,stroke:#888,color:#fff
+```
+
+---
+
+## Quick Reference — What Each Slide Covers
+
+| Slide | Title | Audience | Focus |
+|---|---|---|---|
+| **Slide 1** | System Overview | Anyone | What the system IS |
+| **Slide 2** | Firmware Architecture | Technical | What happens INSIDE the ESP32 |
+| **Slide 3** | Processing Flowchart | Technical | HOW it works step by step |

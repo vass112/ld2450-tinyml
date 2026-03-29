@@ -1,0 +1,77 @@
+# ESP-NOW Radar Node — LD2450 Sensor + ESP-NOW Transmitter
+# Reads LD2450 via UART, runs Kalman analytics, broadcasts via ESP-NOW
+# NO web server, NO HTTP — just UART + ESP-NOW + OTA
+substitutions:
+  devicename: radar-espnow
+  friendly_name: Radar ESP-NOW
+
+esphome:
+  name: $devicename
+  friendly_name: ${friendly_name}
+  platformio_options:
+    board_build.flash_mode: dio
+  on_boot:
+    - priority: -200
+      then:
+        - lambda: espnow_init_sender();
+  includes:
+    - espnow_sender.h
+    - ../common/radar_packet.h
+    - ../common/target_analytics.h
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+
+ota:
+  platform: esphome
+  password: "hpsz1234"
+
+wifi:
+  ap:
+    ssid: "RadarNode"
+    password: "radarpass1234"
+    channel: 1
+  power_save_mode: NONE
+
+uart:
+  id: uart_bus
+  tx_pin:
+    number: GPIO17
+    mode:
+      input: true
+      pullup: true
+  rx_pin:
+    number: GPIO16
+    mode:
+      input: true
+      pullup: true
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+  data_bits: 8
+  debug:
+    direction: BOTH
+    dummy_receiver: True
+    after:
+      delimiter: [0x55, 0xCC]
+    sequence:
+      - lambda: |-
+          // Throttle to ~30Hz (every 33ms)
+          static unsigned long last_send = 0;
+          if (millis() - last_send < 33) return;
+          last_send = millis();
+          parse_ld2450_and_send(bytes);
+
+sensor:
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s

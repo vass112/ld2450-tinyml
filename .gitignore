@@ -1,0 +1,52 @@
+# Compiled binary/object files
+*.o
+*.a
+*.so
+*.elf
+*.bin
+*.hex
+
+# Build directories
+.esphome/
+.pio/
+build/
+bin/
+obj/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+secrets.yaml
+!secrets.yaml.template
+events.txt
+results.csv
+results/
+tinyml_results/
+labeled_data/*.csv
+
+# PDF exports (uncomment if you want to keep them local)
+# *.pdf

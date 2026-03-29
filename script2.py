@@ -1,0 +1,71 @@
+with open("C:/Users/DELL/Desktop/ld2450/FIRMWARE_DOCUMENTATION.md", "r", encoding="utf-8") as f:
+    text = f.read()
+
+text = text.replace(
+"""### Core Services
+| Service | Port | Purpose |
+|---------|------|---------|
+| ESPHome Web Server | 80 | Entity state + SSE stream (`/events`) |
+| **Embedded Radar GUI** | **8080** | Serves the radar web app from flash |
+| OTA | — | Wireless firmware updates |
+| mDNS / Captive Portal | — | Network discovery |""",
+"""### Core Services
+| Service | Port | Purpose |
+|---------|------|---------|
+| ESPHome Web Server | 80 | Entity state + SSE stream (`/events`) + **Embedded Radar GUI** (`/radar`) |
+| OTA | — | Wireless firmware updates |
+| mDNS / Captive Portal | — | Network discovery |""")
+
+text = text.replace(
+"""## 3. Embedded Radar GUI Server
+
+`radar_gui.html` (31KB) is gzip-compressed to 7.5KB and stored as a C `uint8_t` byte array in `radar_html.h`. A custom component in `radar_server.h` starts an ESP-IDF `httpd` server on **port 8080** that serves this array with `Content-Encoding: gzip`, so the browser decompresses it transparently.""",
+"""## 3. Embedded Radar GUI Server
+
+`radar_gui.html` (31KB) is gzip-compressed to 7.5KB and stored as a C `uint8_t` byte array in `radar_html.h`. A custom handler `RadarGuiHandler` in `radar_server.h` is registered to the main ESPHome web server running on **port 80**. It listens to the `/radar` and `/radar/` endpoints, and serves this array with `Content-Encoding: gzip` directly using ESP-IDF `httpd_resp_send`, resolving previous socket limitations when running a completely separate web server instance.""")
+
+text = text.replace("""## 4. Target Analytics Engine — Mathematical Detail
+
+All computation runs on the ESP32 at a **200ms (5 Hz) update interval**. The browser only renders pre-processed results.""",
+"""## 4. Target Analytics Engine — Mathematical Detail
+
+The previous simple classification has been upgraded with a powerful **TinyML Multi-Layer Perceptron (MLP)** running locally on the ESP32 for highly accurate motion classification, and a custom `TargetAnalytics` C++ block tracking physics (Kalman) and threat scores. All computation runs on the ESP32 at a **200ms (5 Hz) update interval**. The browser only renders pre-processed results.""")
+
+text = text.replace("""### 4.3 Target Classification
+
+Classification uses the EMA-smoothed scalar speed `|v|` = `(fil_vx + fil_vy)`:
+
+| Class | Speed Threshold | Physical Basis |
+|-------|----------------|----------------|
+| `STATIC` | < 0.05 m/s | LD2450 noise floor  0.03 m/s; 0.05 provides 1.6s margin |
+| `CREEPING` | 0.05 – 0.5 m/s | Slow crawl / repositioning |
+| `WALKING` | 0.5 – 1.8 m/s | Normal human walking: 1.2–1.4 m/s typical |
+| `RUNNING` | 1.8 – 4.0 m/s | Human running: 2–4 m/s typical |
+| `VEHICLE` | > 4.0 m/s | Bicycle / motor vehicle |
+
+**Threshold validation**: Human walking speed is well-documented at 1.2–1.4 m/s (mean). The 1.8 m/s WALKINGRUNNING threshold gives a **0.4 m/s margin** (3s above walking mean, given typical 0.1 m/s speed variability), preventing mis-classification during brisk walking.""",
+"""### 4.3 TinyML Target Classification
+
+Instead of raw speed thresholds, classification now uses an embedded TinyML neural network. The model is a 3-layer Multi-Layer Perceptron (MLP) trained on captured radar data. The neural network takes a rolling window of the last 10 frames (2 seconds) of radar data for each target, recognizing complex movement sequences rather than instantaneous velocities.
+
+**Features extracted per frame:**
+1. Normalized X position
+2. Normalized Y position
+3. Normalized Kalman Speed
+4. Normalized Distance to sensor
+5. Normalized Target Threat Score
+6. Normalized dx (X displacement)
+7. Normalized dy (Y displacement)
+
+The model was exported from Keras to raw C++ arrays inside `tinyml_weights.h` and executed via `TinyMLClassifier` inside `tinyml_classifier.h` at each 200ms sensor tick.
+It outputs a softmax probability across 5 classes: `STATIC`, `CREEPING`, `WALKING`, `RUNNING`, `VEHICLE`.""")
+
+text = text.replace("""| `radar_server.h` | `C:\esphome-ld2450\` | ESP-IDF HTTP server on port 8080 |""",
+"""| `radar_server.h` | `C:\esphome-ld2450\` | Custom ESPHome web server handler on port 80 under `/radar` |
+| `tinyml_classifier.h` | `C:\esphome-ld2450\` | Embedded MLP neural network runtime |
+| `tinyml_weights.h` | `C:\esphome-ld2450\` | Auto-exported neural network weights |""")
+
+with open("C:/Users/DELL/Desktop/ld2450/FIRMWARE_DOCUMENTATION.md", "w", encoding="utf-8") as f:
+    f.write(text)
+
+print("Documentation updated successfully.")

@@ -1,0 +1,328 @@
+﻿
+============================================================
+  PAGE 1
+============================================================
+FMCW Radar Node for Surveillance
+Operations
+Guided by Presented by
+Prof. Sabi S 1.Arjun M (SBC22EC013)
+Prof. Jasmin Basheer 2.Blesson Binu (SBC22EC016)
+Asst. Professors 3.Kripa Krishna (SBC22EC023)
+Dept. of ECE
+02/03/2026 Department of Electronics & Communication Engineering 1
+
+============================================================
+  PAGE 2
+============================================================
+Content
+Objective
+Introduction
+Literature Survey
+Methodology
+Project Timeline
+Project Budget
+Results
+Reference
+02/03/2026 Department of Electronics & Communication Engineering 2
+
+============================================================
+  PAGE 3
+============================================================
+Objective
+To develop a standalone FMCW radar node for real-time
+detection and tracking of human targets using mmWave
+sensing technology.
+To implement onboard motion analytics and threat
+assessment based on target behavior and movement
+characteristics.
+To design an autonomous surveillance system with
+embedded processing and real-time WiFi-based
+monitoring.
+Fig 1: Visual Indicators of High Stress Vs Neutral Intent
+02/03/2026 Department of Electronics & Communication Engineering 3
+
+============================================================
+  PAGE 4
+============================================================
+Introduction
+Modern surveillance requires reliable detection that
+operates independently of lighting conditions and visual
+obstructions.
+Millimeter-wave radar provides privacy-preserving, real-
+time detection of human presence even in low-visibility
+environments.
+This project develops a compact standalone radar node
+capable of multi-target tracking, behavioral analysis, and
+real-time threat evaluation.
+Fig 2 : Radar Intelligence Sensing
+02/03/2026 Department of Electronics & Communication Engineering 4
+
+============================================================
+  PAGE 5
+============================================================
+Literature Survey
+Reference Journal Year of
+Article D etails Observations
+No. Name publication
+A pretrained neural network
+Multisensor Low-Cost System for Real
+IEEE 2019 (MobileNet) is used to process camera
+Time Human Detection and Remote
+[1]
+frames and detect human presence in
+Respiration Monitoring
+real-time.
+The proposed algorithm mainly consists of
+A High-Computational Efficiency
+Sensors head detection based on local pooling
+[2] Human Detection and Flow Estimation 2019
+(MDPI) and searching, classification refinement
+Method Based on TOF Measurements
+based on human morphological features.
+UAV rescue system using hierarchical
+Real-Time Human Detection and
+Sensors gesture recognition (DNN/CNN). Key:
+[3] Gesture Recognition for On-Board UAV 2021
+(MDPI) dynamic "Attention" (set) and "Cancel"
+Rescue (Liu, C. and Szirßnyi, T. )
+(reset) gestures.
+02/03/2026 Department of Electronics & Communication Engineering 5
+
+============================================================
+  PAGE 6
+============================================================
+Literature Survey
+Reference
+Journal Year of
+Article Details Observations
+No. Name publication
+A Human-Detection Method
+Based on YOLOv5 and Transfer Optimizes YOLOv5s with Transfer Learning for small-
+Learning Using Thermal Image Drones object human detection using RGBT (Thermal + RGB)
+[4] 2022
+Data from UAV Perspective for (MDPI) images from a UAV. Achieved up to 88.8% AP on TIR
+Surveillance System (Mantau, A. images.
+J. et al. )
+A thermal imaging camera (TIC) with a deep
+Using Deep Learning with
+learning model is used as an intelligent human
+Thermal Imaging for Human Sensors 2022
+[5]
+detection approach during emergency
+Detection in Heavy Smoke (MDPI)
+evacuations.
+Scenarios
+MILLIMETER WAVE RADAR-
+BASED HUMAN ACTIVITY Proposes RobHAR for real-time, continuous HAR on a
+[6] RECOGNITION FOR arXiv 2024 movable robot. Uses lightweight LPN-BiLiLSTM model
+HEALTHCARE MONITORING with HMM-CTC for robust transition optimization.
+ROBOT (Gu, Z. et al.)
+02/03/2026 Department of Electronics & Communication Engineering 6
+
+============================================================
+  PAGE 7
+============================================================
+Literature Survey
+Reference Year of
+Article Details Journal Name Observations
+No. publication
+Radar-Based Human
+Solves HAR domain shift in unseen
+Activity Recognition: A
+Electronics environments. Combines time-frequency
+[7] 2025
+Study on Cross-
+(MDPI) warping (DA) and DANN (UDA) to reduce
+Environment Robustness
+performance drop from 29.6% to 13.2%.
+(El Hail, R. et al.)
+Non-NN TWR HAR. Segments micro-Doppler
+Through-the-Wall Radar
+using ACM. Classifies using Mapper algorithm
+Human Activity Recognition
+[8] arXiv 2025
+(topological similarity). Showed comparable
+WITHOUT Using Neural
+robustness to noise as NNs.
+Networks (Gao, W.)
+02/03/2026 Department of Electronics & Communication Engineering 7
+
+============================================================
+  PAGE 8
+============================================================
+BLOCK DIAGRAM
+RADAR GUI (WEB BROWSER)
+ESP32 MCU
+FMCW RADAR
+HUMAN TARGET (SIGNAL PROCESSING +
+(HLK-LD2450)
+TINYML)
+LIVE DATA SSE STREAM
+Fig 3 : System Block diagram
+02/03/2026 Department of Electronics & Communication Engineering 8
+
+============================================================
+  PAGE 9
+============================================================
+Methodology
+Hardware Design
+Central processing unit
+Executes analytics algorithms
+Hosts embedded web dashboard
+Provides WiFi connectivity
+Fig 4 : ESP 32[10]
+24GHz FMCW radar sensor
+Tracks up to 3 targets simultaneously
+Provides position and velocity data
+Supports zone-based detection
+Fig 5 : HLK-LD2450[10]
+02/03/2026 Department of Electronics & Communication Engineering 9
+
+============================================================
+  PAGE 10
+============================================================
+ESP32 FIRMWARE ARCHITECTURE
+FRAME PARSER
+(BINARY DECODER 26-BYTE FRAME)
+OUTPUT
+SIGNAL FILTERING
+SSE EVENT STREAM HTTP RADAR GUI SERVER
+KALMAN FILTER EMA SMOOTHER
+INTELLIGENCE LAYER
+TINY ML CLASSIFIER
+THREAT SCORE
+LOITERING DETECTOR
+02/03/2026 Department of Electronics & Communication Engineering 10
+
+============================================================
+  PAGE 11
+============================================================
+TINYML MOTION CLASSIFICATION PIPELINE
+FILTERED DATA
+FEATURE EXTRACTION
+FRAME WINDOW BUFFER
+MLP INTERFERENCE
+WINDOW
+FULL?
+MOTION CLASSIFICATION
+OUTPUT UPDATE
+LOOP
+LOOP
+02/03/2026 Department of Electronics & Communication Engineering 11
+
+============================================================
+  PAGE 12
+============================================================
+CIRCUIT DIAGRAM
+Fig 7 : Circuit Diagram
+Department of Electronics & Communication Engineering
+02/03/2026 12
+
+============================================================
+  PAGE 13
+============================================================
+EXPERIMENTAL SETUP
+Fig 8 : Experimental Setup
+02/03/2026 Department of Electronics & Communication Engineering 13
+
+============================================================
+  PAGE 14
+============================================================
+RESULTS AND ANALYSIS
+Kalman Filter Noise Reduction
+Fig 9 : Real Time Threat Score Timeline with Alert State Transitions
+Fig 9 : Kalman Filter Noise Reduction on LD2450 Position Data
+02/03/2026 Department of Electronics & Communication Engineering 14
+
+============================================================
+  PAGE 15
+============================================================
+RESULTS AND ANALYSIS
+Real Time Threat Score Timeline
+Fig 10 : Real Time Threat Score Timeline with Alert State Transitions
+02/03/2026 Department of Electronics & Communication Engineering 14
+
+============================================================
+  PAGE 16
+============================================================
+2D TARGET POSITION TRACE
+Scatter plot of raw vs Kalman-filtered positions
+in mm. Color-coded by threat score; blue
+arrows indicate predicted movement direction.
+Fig 11 : 2D Target Position Trace(Kalman Filtered+Prediction Vectors)
+02/03/2026 Department of Electronics & Communication Engineering 14
+
+============================================================
+  PAGE 17
+============================================================
+MOTION CLASSIFICATION DISTRIBUTION
+Fig 12 : Target Classification Results
+02/03/2026 Department of Electronics & Communication Engineering 14
+
+============================================================
+  PAGE 18
+============================================================
+SYSTEM COMPARISON CHART
+Fig 13 :LD2450+ESP32 Vs Alternatives
+02/03/2026 Department of Electronics & Communication Engineering 14
+
+============================================================
+  PAGE 19
+============================================================
+Project TimeLine (Gantt Chart)
+Fig 14 : Gantt chart
+02/03/2026 Department of Electronics & Communication Engineering 16
+
+============================================================
+  PAGE 20
+============================================================
+Project Budget
+SlN o Product Name Quantity Price
+1 HLK-LD2450 Radar 1 Rs. 1640
+2 ESP32 1 Rs. 360
+3 MISC. - Rs. 500
+- TOTAL 2 Rs. 2500
+02/03/2026 Department of Electronics & Communication Engineering 17
+
+============================================================
+  PAGE 21
+============================================================
+Individual Contribution
+1. Project Prototype and ML Training - Arjun M
+SlN o Product Name Quantity Price
+2. Conference Paper Content and ML , Project Report, Presentation - Kripa Krishna
+3. Hardware and Firmware Testing - Blesson Binu
+Department of Electronics & Communication Engineering 17
+02/03/2026
+
+============================================================
+  PAGE 22
+============================================================
+Reference
+[1] Ivanovs, Arturs, et al. "Multisensor low-cost system for real time human detection and remote respiration
+monitoring." 2019 Third IEEE international conference on robotic computing (IRC). IEEE, 2019.
+[2] Wang, Weihang, et al. "A high-computational efficiency human detection and flow estimation method based on tof
+measurements." Sensors 19.3 (2019): 729.
+[3] Liu, Chang, and Tamßs Szirßnyi. "Real-time human detection and gesture recognition for on-board UAV rescue."
+Sensors 21.6 (2021): 2180.
+[4] Mantau, Aprinaldi Jasa, et al. "A human-detection method based on YOLOv5 and transfer learning using thermal
+image data from UAV perspective for surveillance system." Drones 6.10 (2022): 290.
+[5] Tsai, Pei-Fen, Chia-Hung Liao, and Shyan-Ming Yuan. "Using deep learning with thermal imaging for human
+detection in heavy smoke scenarios." Sensors 22.14 (2022): 5351.
+[6] Gu, Zhanzhong, et al. "Millimeter wave radar-based human activity recognition for healthcare monitoring robot."
+arXiv preprint arXiv:2405.01882 (2024).
+[7] El Hail, Reda, et al. "Radar-Based Human Activity Recognition: A Study on Cross-Environment Robustness."
+Electronics 14.5 (2025): 875.
+[8] Gao, Weicheng. "Through-the-Wall Radar Human Activity Recognition WITHOUT Using Neural Networks." arXiv
+preprint arXiv:2506.05169 (2025).
+02/03/2026 Department of Electronics & Communication Engineering 18
+
+============================================================
+  PAGE 23
+============================================================
+Bibiliography
+[9] Google. (2025, Dec. 30). "Visual Indicators of High Stress Vs Neutral Intent." [AI-Generated Image].
+Generated by Gemini.
+[10] "Comparative Study of Microcontroller: ARDUINO UNO, RASPBERRY PI 4, ESP 32" (2024). International
+Journal for Research in Applied Science and Engineering Technology (IJRASET).
+02/03/2026 Department of Electronics & Communication Engineering 19

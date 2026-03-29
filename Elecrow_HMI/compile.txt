@@ -1,0 +1,39 @@
+INFO ESPHome 2026.2.4
+INFO Reading configuration elecrow-display.yaml...
+INFO Generating C++ source...
+INFO Setting CONFIG_LWIP_MAX_SOCKETS to 13 (registered: captive_portal=4, mdns=2, ota=1, web_server=6)
+INFO Compiling app... Build path: C:\Users\DELL\Desktop\ld2450-tinyml\Elecrow_HMI\.esphome\build\elecrow-display
+Processing elecrow-display (board: esp32-s3-devkitc-1; framework: espidf; platform: https://github.com/pioarduino/platform-espressif32/releases/download/55.03.37/platform-espressif32.zip)
+--------------------------------------------------------------------------------
+HARDWARE: ESP32S3 240MHz, 320KB RAM, 4MB Flash
+ - contrib-piohome @ 3.4.4 
+ - framework-espidf @ 3.50502.0 (5.5.2) 
+ - tool-cmake @ 4.0.3 
+ - tool-esp-rom-elfs @ 2024.10.11 
+ - tool-esptoolpy @ 5.1.2 
+ - tool-ninja @ 1.13.1 
+ - tool-scons @ 4.40801.0 (4.8.1) 
+ - toolchain-xtensa-esp-elf @ 14.2.0+20251107
+Reading CMake configuration...
+No dependencies
+Compiling .pioenvs\elecrow-display\src\main.cpp.o
+In file included from src/main.cpp:84:
+src/radar_client.h: In function 'void radar_poll()':
+src/radar_client.h:72:16: error: reference to 'socket' is ambiguous
+   72 |     sse_sock = socket(AF_INET, SOCK_STREAM, 0);
+      |                ^~~~~~
+In file included from src/esphome\components\captive_portal\dns_server_esp32_idf.h:7,
+                 from src/esphome\components\captive_portal\captive_portal.h:6,
+                 from src/esphome.h:7,
+                 from src/main.cpp:3:
+src/esphome/components/socket/socket.h:10:20: note: candidates are: 'namespace esphome::socket { }'
+   10 | namespace esphome::socket {
+      |                    ^~~~~~
+In file included from C:/Users/DELL/.platformio/packages/framework-espidf/components/lwip/port/esp32xx/include/sys/socket.h:15,
+                 from src/esphome/components/socket/headers.h:157,
+                 from src/esphome/components/socket/socket.h:7:
+C:/Users/DELL/.platformio/packages/framework-espidf/components/lwip/include/lwip/sockets.h:69:19: note:                 'int socket(int, int, int)'
+   69 | static inline int socket(int domain,int type,int protocol)
+      |                   ^~~~~~
+*** [.pioenvs\elecrow-display\src\main.cpp.o] Error 1
+========================= [FAILED] Took 14.65 seconds =========================

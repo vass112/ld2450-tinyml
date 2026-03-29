@@ -367,15 +367,15 @@ def chart_comparison():
     fig = plt.figure(figsize=(14, 9))
     fig.patch.set_facecolor(_LIGHT)
     fig.suptitle('Chart 5: System Comparison — LD2450+ESP32 vs Alternatives\n(Score: 0=poor, 5=excellent)',
-                 color=GREEN, fontsize=11, fontweight='bold', y=0.98)
+                 color=_DARK, fontsize=11, fontweight='bold', y=0.98)
 
     n_ax = len(axes_labels)
     angles = [n / float(n_ax) * 2 * math.pi for n in range(n_ax)]
     angles += angles[:1]
 
     ax = fig.add_subplot(111, polar=True)
-    ax.set_facecolor('#0f180f')
-    colors_ = [GREEN, GREY, BLUE, AMBER, RED, '#cc44ff']
+    ax.set_facecolor('#ffffff')
+    colors_ = [GREEN, '#778899', BLUE, AMBER, RED, '#8e44ad']
 
     for (name, scores), col in zip(systems.items(), colors_):
         vals_ = scores + scores[:1]
@@ -385,11 +385,11 @@ def chart_comparison():
         ax.fill(angles, vals_, color=col, alpha=0.05 if 'this work' not in name else 0.15)
 
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(axes_labels, size=8, color=GREEN)
+    ax.set_xticklabels(axes_labels, size=8, color=_DARK)
     ax.set_ylim(0, 5)
     ax.set_yticks([1,2,3,4,5])
     ax.set_yticklabels(['1','2','3','4','5'], color=GREY, size=7)
-    ax.grid(color='#1a331a', linewidth=0.6, alpha=0.8)
+    ax.grid(color='#e0e0e0', linewidth=0.6, alpha=1.0)
     ax.tick_params(colors=GREY)
 
     leg = ax.legend(loc='lower left', bbox_to_anchor=(-0.28, -0.22),
@@ -416,8 +416,8 @@ def chart_cost():
     colors_ = [GREY, GREY, GREY, GREEN, GREY, GREY]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    fig.suptitle('Chart 6: Cost vs Capability — Detection System Comparison\n(bubble size ∝ capability score)',
-                 color=GREEN, fontsize=11, fontweight='bold')
+    fig.suptitle('Chart 6: Cost vs Capability — Detection System Comparison\n(bubble size propto capability score)',
+                 color=_DARK, fontsize=11, fontweight='bold')
 
     for name, cost, cap, col in zip(names, costs, capabs, colors_):
         size = (cap ** 2) * 200
@@ -425,13 +425,13 @@ def chart_cost():
                    linewidth=0.5, zorder=3)
         offset_y = 0.12 if 'this work' not in name else 0.18
         ax.text(cost, cap + offset_y, name.replace('\n',' '),
-                ha='center', va='bottom', fontsize=7.5,
-                color=GREEN if 'this work' in name else GREY)
+                ha='center', va='bottom', fontsize=8,
+                color=_DARK, fontweight='bold' if 'this work' in name else 'normal')
 
     # Annotate this-work with arrow
     ax.annotate('Best cost-capability\nratio', xy=(12, 4.8), xytext=(50, 4.2),
-                arrowprops=dict(arrowstyle='->', color=GREEN, lw=1.0),
-                color=GREEN, fontsize=8)
+                arrowprops=dict(arrowstyle='->', color=RED, lw=1.5),
+                color=RED, fontsize=9, fontweight='bold')
 
     ax.set_xscale('log')
     ax.set_xlabel('System Cost (USD, log scale)', fontsize=9)

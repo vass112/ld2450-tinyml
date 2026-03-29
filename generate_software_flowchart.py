@@ -41,14 +41,14 @@ class DrawIOFlowchart:
 doc = DrawIOFlowchart()
 
 # Standard Flowchart Styles
-S_TERM = "rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#D5E8D4;strokeColor=#82E0AA;fontColor=#000;strokeWidth=2;fontStyle=1;"
-S_PROC = "rounded=0;whiteSpace=wrap;html=1;fillColor=#EBF5FB;strokeColor=#5DADE2;fontColor=#000;strokeWidth=2;"
-S_DEC  = "rhombus;whiteSpace=wrap;html=1;fillColor=#FCF3CF;strokeColor=#F1C40F;fontColor=#000;strokeWidth=2;"
-S_IO   = "shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#FADBD8;strokeColor=#E74C3C;fontColor=#000;strokeWidth=2;"
-S_LANE = "swimlane;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#bdc3c7;fontColor=#000;startSize=30;fontStyle=1;fontSize=14;"
+S_TERM = "rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#E1F5FE;strokeColor=#03A9F4;fontColor=#01579B;strokeWidth=2;fontStyle=1;"
+S_PROC = "rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#8BC34A;fontColor=#33691E;strokeWidth=2;"
+S_DEC  = "rhombus;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#FBC02D;fontColor=#F57F17;strokeWidth=2;"
+S_IO   = "shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#F3E5F5;strokeColor=#9C27B0;fontColor=#4A148C;strokeWidth=2;"
+S_LANE = "swimlane;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#CFD8DC;fontColor=#263238;startSize=30;fontStyle=1;fontSize=14;"
 
 # Edges
-E_DEF = "strokeColor=#34495E;strokeWidth=2;fontColor=#000;"
+E_DEF = "strokeColor=#546E7A;strokeWidth=2;fontColor=#263238;"
 DOWN  = "exitX=0.5;exitY=1;entryX=0.5;entryY=0;"
 LEFT  = "exitX=0;exitY=0.5;entryX=1;entryY=0.5;"
 RIGHT = "exitX=1;exitY=0.5;entryX=0;entryY=0.5;"

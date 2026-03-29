@@ -38,15 +38,15 @@ def draw_lipo(x, y, w=20, h=12):
     return (tx+3, ty+2), (tx+3, ty-2) # Power, GND pins
 
 def draw_nodemcu(x, y, w=22, h=30):
-    # Black PCB
-    ax.add_patch(patches.FancyBboxPatch((x, y), w, h, facecolor='#1c1c1c', edgecolor='#000', lw=2, zorder=5, boxstyle="round,pad=0.2"))
+    # Light Grey PCB
+    ax.add_patch(patches.FancyBboxPatch((x, y), w, h, facecolor='#e0e0e0', edgecolor='#bdc3c7', lw=2, zorder=5, boxstyle="round,pad=0.2"))
     # USB port
     ax.add_patch(patches.Rectangle((x+w/2-3, y+h-1), 6, 2, facecolor='#bdc3c7', edgecolor='#7f8c8d', lw=1, zorder=6))
     # WiFi Module
     ax.add_patch(patches.Rectangle((x+3, y+h-10), w-6, 8, facecolor='#e6e6e6', edgecolor='#999', lw=1, zorder=6))
     ax.add_patch(patches.Rectangle((x+6, y+h-4), 8, 1, facecolor='#d4af37', edgecolor='none', zorder=7)) # Antenna trace
     # ESP8266 Text
-    ax.text(x+w/2, y+8, "NodeMCU\nESP8266", color='white', ha='center', va='center', fontsize=9, fontweight='bold', zorder=6)
+    ax.text(x+w/2, y+8, "NodeMCU\nESP8266", color='black', ha='center', va='center', fontsize=9, fontweight='bold', zorder=6)
     
     # Generate Pins
     pins = {}
@@ -56,19 +56,19 @@ def draw_nodemcu(x, y, w=22, h=30):
     for i, p in enumerate(pin_labels_left):
         py = y + h - 12 - (i * 1.3)
         ax.add_patch(patches.Rectangle((x-1, py), 2, 0.8, facecolor='#f1c40f', zorder=6)) # Gold pin
-        ax.text(x+2, py+0.4, p, color='white', ha='left', va='center', fontsize=6, zorder=6, fontfamily='monospace')
+        ax.text(x+2, py+0.4, p, color='black', ha='left', va='center', fontsize=6, zorder=6, fontfamily='monospace')
         pins[p+"_L"] = (x-1, py+0.4)
         if p == 'VIN': pins['VIN'] = (x-1, py+0.4)
     for i, p in enumerate(pin_labels_right):
         py = y + h - 12 - (i * 1.3)
         ax.add_patch(patches.Rectangle((x+w-1, py), 2, 0.8, facecolor='#f1c40f', zorder=6))
-        ax.text(x+w-2, py+0.4, p, color='white', ha='right', va='center', fontsize=6, zorder=6, fontfamily='monospace')
+        ax.text(x+w-2, py+0.4, p, color='black', ha='right', va='center', fontsize=6, zorder=6, fontfamily='monospace')
         pins[p+"_R"] = (x+w+1, py+0.4)
     
     # Assume VIN is at bottom left (often it is next to GND at the bottom)
     pins['VIN']  = (x-1, y+h-12-(13*1.3)) 
     ax.add_patch(patches.Rectangle((x-1, pins['VIN'][1]-0.4), 2, 0.8, facecolor='#f1c40f', zorder=6))
-    ax.text(x+2, pins['VIN'][1], "VIN", color='white', ha='left', va='center', fontsize=6, zorder=6, fontfamily='monospace')
+    ax.text(x+2, pins['VIN'][1], "VIN", color='black', ha='left', va='center', fontsize=6, zorder=6, fontfamily='monospace')
 
     return pins
 
@@ -113,9 +113,9 @@ def draw_tt_motor(x, y, label="Motor"):
     return {"+": (x+14, y+4), "-": (x+14, y+2)}
 
 def draw_receiver(x, y):
-    # ES900X is a tiny black square with antenna and wires
-    ax.add_patch(patches.FancyBboxPatch((x, y), 10, 10, facecolor='#1a1a1a', edgecolor='#000', lw=1.5, zorder=5, boxstyle="round,pad=0.2"))
-    ax.text(x+5, y+5, "ES900X\nRX", color='white', ha='center', va='center', fontsize=6, fontweight='bold', zorder=6)
+    # ES900X is a tiny light square with antenna and wires
+    ax.add_patch(patches.FancyBboxPatch((x, y), 10, 10, facecolor='#f5f5f5', edgecolor='#bdc3c7', lw=1.5, zorder=5, boxstyle="round,pad=0.2"))
+    ax.text(x+5, y+5, "ES900X\nRX", color='black', ha='center', va='center', fontsize=6, fontweight='bold', zorder=6)
     # T-Antenna
     ax.plot([x+5, x+5], [y+10, y+16], color='#111', lw=1.5, zorder=4)
     ax.plot([x+1, x+9], [y+16, y+16], color='#111', lw=2, zorder=4)
@@ -124,10 +124,10 @@ def draw_receiver(x, y):
     return {"RX": (x+3, y-1), "TX": (x+5, y-1), "5V": (x+7, y-1), "GND": (x+9, y-1)}
 
 def draw_fpv(x, y):
-    # Tiny box
-    ax.add_patch(patches.Rectangle((x, y), 12, 12, facecolor='#000', edgecolor='#333', lw=1.5, zorder=5))
+    # Light box
+    ax.add_patch(patches.Rectangle((x, y), 12, 12, facecolor='#f5f5f5', edgecolor='#bdc3c7', lw=1.5, zorder=5))
     # Lens
-    ax.add_patch(patches.Circle((x+6, y+6), 4, facecolor='#111', edgecolor='#555', lw=1, zorder=6))
+    ax.add_patch(patches.Circle((x+6, y+6), 4, facecolor='#333', edgecolor='#555', lw=1, zorder=6))
     ax.add_patch(patches.Circle((x+7, y+7), 1, facecolor='#fff', alpha=0.5, zorder=7)) # Glare
     ax.text(x+6, y-2, "FPV CAM", ha='center', va='top', fontsize=7, fontweight='bold', zorder=6)
     return {"VCC": (x+12, y+8), "GND": (x+12, y+6), "VID": (x+12, y+4)}

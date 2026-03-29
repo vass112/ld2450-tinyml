@@ -5,19 +5,19 @@
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="c_bat" value="&lt;b&gt;2S LiPo Battery&lt;/b&gt;&lt;br&gt;7.4V Power" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#34495E;strokeColor=#273746;fontColor=#F1C40F;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_bat" value="&lt;b&gt;2S LiPo Battery&lt;/b&gt;&lt;br&gt;7.4V Power" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#03A9F4;fontColor=#01579B;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="50" y="250" width="120" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="c_rx" value="&lt;b&gt;ES900X RX&lt;/b&gt;&lt;br&gt;(Telemetry/Control)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#17202A;strokeColor=#000000;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_rx" value="&lt;b&gt;ES900X RX&lt;/b&gt;&lt;br&gt;(Telemetry/Control)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="150" y="100" width="120" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="c_node" value="&lt;b&gt;ESP8266 NodeMCU&lt;/b&gt;&lt;br&gt;(Rover Controller)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#239B56;strokeColor=#186A3B;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="350" y="100" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="c_esp" value="&lt;b&gt;ESP32 Node&lt;/b&gt;&lt;br&gt;(Radar Processor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#17202A;strokeColor=#000000;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_esp" value="&lt;b&gt;ESP32 Node&lt;/b&gt;&lt;br&gt;(Radar Processor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="550" y="100" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="c_ld" value="&lt;b&gt;LD2450&lt;/b&gt;&lt;br&gt;(Radar Sensor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#17202A;strokeColor=#000000;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_ld" value="&lt;b&gt;LD2450&lt;/b&gt;&lt;br&gt;(Radar Sensor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="750" y="100" width="100" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="c_cam" value="&lt;b&gt;FPV Camera&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2874A6;strokeColor=#1B4F72;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
@@ -29,16 +29,16 @@
         <mxCell id="c_drv" value="&lt;b&gt;HW-354 L298N&lt;/b&gt;&lt;br&gt;Dual H-Bridge Motor Driver" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CB4335;strokeColor=#922B21;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="350" y="450" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="c_mtl" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (L-Top)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_mtl" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (L-Top)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#EEEEEE;strokeColor=#999999;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="100" y="400" width="80" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="c_mbl" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (L-Bot)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_mbl" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (L-Bot)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#EEEEEE;strokeColor=#999999;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="100" y="550" width="80" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="c_mtr" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (R-Top)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_mtr" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (R-Top)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#EEEEEE;strokeColor=#999999;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="650" y="400" width="80" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="c_mbr" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (R-Bot)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#95A5A6;strokeColor=#7F8C8D;fontColor=#ffffff;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="c_mbr" value="&lt;b&gt;12V Geared&lt;/b&gt;&lt;br&gt;Motor (R-Bot)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#EEEEEE;strokeColor=#999999;fontColor=#333333;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="650" y="550" width="80" height="80" as="geometry"/>
         </mxCell>
         <mxCell id="edge_1" value="7.4V" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#E74C3C;strokeWidth=3;exitX=1;exitY=0.25;entryX=0;entryY=0.75;" edge="1" parent="1" source="c_bat" target="c_node">

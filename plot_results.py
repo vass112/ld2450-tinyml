@@ -18,21 +18,22 @@ OUTDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'results')
 os.makedirs(OUTDIR, exist_ok=True)
 
 # ── Styling ──────────────────────────────────────────────────────────────────
-DARK  = '#0a0f0a'
-GREEN = '#00ff88'
-AMBER = '#ffaa00'
-RED   = '#ff3355'
-BLUE  = '#00aaff'
-GREY  = '#8899aa'
+_LIGHT = '#ffffff'
+_DARK  = '#2c3e50'
+GREEN = '#107c10'  # Office-style green
+AMBER = '#d83b01'  # Office-style burnt orange
+RED   = '#a80000'  # Office-style red
+BLUE  = '#0078d4'  # Office-style blue
+GREY  = '#605e5c'
 
 def style():
     plt.rcParams.update({
-        'figure.facecolor': DARK, 'axes.facecolor': '#0f180f',
-        'axes.edgecolor': '#1a331a', 'axes.labelcolor': GREEN,
-        'axes.titlecolor': GREEN, 'text.color': GREEN,
+        'figure.facecolor': _LIGHT, 'axes.facecolor': '#fcfcfc',
+        'axes.edgecolor': '#edebe9', 'axes.labelcolor': _DARK,
+        'axes.titlecolor': _DARK, 'text.color': _DARK,
         'xtick.color': GREY, 'ytick.color': GREY,
-        'grid.color': '#1a331a', 'grid.linewidth': 0.5,
-        'font.family': 'monospace', 'font.size': 9,
+        'grid.color': '#edebe9', 'grid.linewidth': 0.5,
+        'font.family': 'sans-serif', 'font.size': 10,
         'figure.dpi': 150,
         'axes.spines.top': False, 'axes.spines.right': False,
     })
@@ -40,7 +41,7 @@ style()
 
 def savefig(name):
     p = os.path.join(OUTDIR, name)
-    plt.savefig(p, bbox_inches='tight', facecolor=DARK)
+    plt.savefig(p, bbox_inches='tight', facecolor=_LIGHT)
     plt.close()
     print(f"  Saved: {p}")
     return p
@@ -322,8 +323,8 @@ def chart_classification(d):
         labels, sizes, cols = zip(*non_zero)
         wedges, texts, autotexts = ax2.pie(
             sizes, labels=labels, colors=cols, autopct='%1.1f%%',
-            startangle=90, textprops={'color': GREEN, 'fontsize': 8})
-        for at in autotexts: at.set_color(DARK)
+            startangle=90, textprops={'color': _DARK, 'fontsize': 8})
+        for at in autotexts: at.set_color('white')
         ax2.set_title('Classification breakdown', color=GREEN, fontsize=9)
 
     plt.tight_layout()
@@ -364,7 +365,7 @@ def chart_comparison():
     ]
 
     fig = plt.figure(figsize=(14, 9))
-    fig.patch.set_facecolor(DARK)
+    fig.patch.set_facecolor(_LIGHT)
     fig.suptitle('Chart 5: System Comparison — LD2450+ESP32 vs Alternatives\n(Score: 0=poor, 5=excellent)',
                  color=GREEN, fontsize=11, fontweight='bold', y=0.98)
 
@@ -393,7 +394,7 @@ def chart_comparison():
 
     leg = ax.legend(loc='lower left', bbox_to_anchor=(-0.28, -0.22),
                     framealpha=0.15, fontsize=8, ncol=2)
-    for t_ in leg.get_texts(): t_.set_color(GREEN)
+    for t_ in leg.get_texts(): t_.set_color(_DARK)
 
     plt.tight_layout()
     return savefig('05_system_comparison_radar.png')
